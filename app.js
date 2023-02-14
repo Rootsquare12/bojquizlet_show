@@ -54,12 +54,12 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/',pageRouter); //메인 화면
-app.use('/user',userRouter);//유저 정보
+app.use('/',pageRouter); //메인 화면 <--- 이 부분
+/*app.use('/user',userRouter);//유저 정보
 app.use('/problems',problemsRouter);//문제 정보
 app.use('/solutions',solutionsRouter);//풀이 정보
-app.use('/auth',authRouter);
-app.use('/api',api);//더미 데이터
+app.use('/auth',authRouter);*/
+app.use('/api',api);//api 호출하기
 
 app.use((req,res,next) => {
     const error=new Error(`${req.method} ${req.url} 라우터가 없습니다!`);

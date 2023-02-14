@@ -8,7 +8,7 @@ exports.afterUploadImage = (req, res) => {
 
 exports.uploadSolution = async (req, res, next) => {
   try {
-    const solution = await Post.create({
+    const solution = await Solution.create({
       content: req.body.content,
       file: req.body.url,
       nickname: req.user.id,
