@@ -4,7 +4,7 @@
   "description": "BOJ 해설 사이트",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app"
+    "start": "nodemon server"
   },
   "author": "rootsquare",
   "license": "MIT",

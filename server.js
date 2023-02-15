@@ -13,10 +13,6 @@ const api=require('./api');
 
 dotenv.config();
 const pageRouter=require('./routes/page'); // 여기서 페이지 정보들을 갖고 온다.
-const userRouter=require('./routes/user'); // 유저 정보.
-const problemsRouter=require('./routes/problems'); // 문제 정보.
-const solutionsRouter=require('./routes/solutions'); // 문제 정보.
-const authRouter=require('./routes/auth'); // 로그인 정보
 const { authorize } = require('passport');
 
 const app=express();
@@ -55,10 +51,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/',pageRouter); //메인 화면 <--- 이 부분
-/*app.use('/user',userRouter);//유저 정보
-app.use('/problems',problemsRouter);//문제 정보
-app.use('/solutions',solutionsRouter);//풀이 정보
-app.use('/auth',authRouter);*/
 app.use('/api',api);//api 호출하기
 
 app.use((req,res,next) => {

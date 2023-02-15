@@ -46,7 +46,7 @@ class User extends Sequelize.Model
         );
     }
     static associate(db) {
-        db.User.hasMany(db.Solution,{foreignKey:'user',targetKey:'nickname'});
+        db.User.hasMany(db.Solution,{foreignKey:'nickname',targetKey:'nickname'});
     }
 };
 

@@ -1,5 +1,6 @@
 /*글 올리기 기능(TODO)*/
-const { Solution } = require('../models');
+const {Problem}=require('../models');
+const {Solution} = require('../models');
 
 exports.afterUploadImage = (req, res) => {
   console.log(req.file);
@@ -7,13 +8,22 @@ exports.afterUploadImage = (req, res) => {
 };
 
 exports.uploadSolution = async (req, res, next) => {
-  try {
+  try
+  {
+    const user=req.params.user;
+    const id=req.params.id;
     const solution = await Solution.create({
-      content: req.body.content,
-      file: req.body.url,
-      nickname: req.user.id,
+      content: "Hello World!",
+      //file: req.body.url,
+      nickname: user,
+      problem_id: id,
     });
-    res.redirect('/');
+    const result=await Problem.update({
+      posts:sequelize.literal('posts+1')
+    },{
+      where: {problem_id: id},
+    });
+    res.send(solution);
   } catch (error) {
     console.error(error);
     next(error);

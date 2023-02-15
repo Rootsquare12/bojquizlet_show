@@ -1,5 +1,5 @@
 const {User}=require('../models');
-exports.renderProfile=async (req,res,next) => {
+exports.findProfile=async (req,res,next) => {
     try
     {
         const name=req.params.id;

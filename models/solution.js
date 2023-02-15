@@ -33,7 +33,7 @@ class Solution extends Sequelize.Model
         );
     }
     static associate(db) {
-        db.Solution.belongsTo(db.User,{foreignKey:'user',targetKey:'nickname'});
+        db.Solution.belongsTo(db.User,{foreignKey:'nickname',targetKey:'nickname'});
         db.Solution.belongsTo(db.Problem,{foreignKey:'problem_id',targetKey:'problem_id'});//테이블간 관계 다시 설정하기
         db.Solution.hasMany(db.Comment);
     }
