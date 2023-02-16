@@ -1,0 +1,106 @@
+const express=require('express');
+const path=require('path');
+const axios=require('axios');
+const morgan=require('morgan');
+const cookieParser=require('cookie-parser');
+const session=require('express-session');
+const nunjucks=require('nunjucks');
+const dotenv=require('dotenv');
+const passport=require('passport');
+const {sequelize}=require('./models');
+const passportConfig=require('./passport');
+const cors=require('cors');
+const api=require('./api');
+
+const pageRouter=require('./routes/page'); // 여기서 페이지 정보들을 갖고 온다.
+const { authorize } = require('passport');
+const helmet=require('helmet');
+const hpp=require('hpp');
+const redis = require('redis');
+const RedisStore = require('connect-redis')(session);
+const logger=require('./logger');
+
+dotenv.config();
+const redisClient = redis.createClient({
+    url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+    password: process.env.REDIS_PASSWORD,
+    legacyMode: true,
+});
+const app=express();
+passportConfig();//패스포트 설정
+app.set('port',process.env.PORT || 8001); // 포트 설정
+app.set('view engine','html'); 
+nunjucks.configure('views',{
+    express: app,
+    watch: true,
+}); // 사용할 템플릿 엔진(테스트용. React로 수정 예정)
+
+sequelize.sync({force: false}) //데이터베이스 연결. force: true로 하면 데이터베이스를 다시 만들 수 있다.
+    .then(() => {
+        console.log('데이터베이스 연결 성공');
+    })
+    .catch((err) => {
+        console.error(err);
+    });
+
+if(process.env.NODE_ENV === 'production') {
+    app.use(morgan('combined'));
+    app.use(
+        helmet({
+          contentSecurityPolicy: false,
+          crossOriginEmbedderPolicy: false,
+          crossOriginResourcePolicy: false,
+        }),
+      );
+    app.use(hpp());
+}
+else {
+    app.use(morgan('dev'));
+}
+app.use(express.static(path.join(__dirname,'public')));
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
+app.use(cookieParser(process.env.COOKIE_SECRET));
+const sessionOption= {
+    resave: false,
+    saveUninitialized: false,
+    secret: process.env.COOKIE_SECRET,
+    cookie: {
+        httpOnly: true,
+        secure: false,
+    },
+    store: new RedisStore({ client: redisClient }),
+}
+if(process.env.NODE_ENV === 'production') {
+    sessionOption.proxy=true;
+    //sessionOption.cookie.secure=true;
+}
+app.use(session(sessionOption));
+app.use(
+    cors({
+      origin: ["http://localhost:3000", "https://boj-quizlet.vercel.app"],
+      credentials: true,
+    })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use('/',pageRouter); //메인 화면 <--- 이 부분
+app.use('/api',api);//api 호출하기
+
+app.use((req,res,next) => {
+    const error=new Error(`${req.method} ${req.url} 라우터가 없습니다!`);
+    error.status=404;
+    logger.info("Hello World");
+    logger.error(error.message);
+    next(error);
+});
+app.use((err, req, res, next) => {
+    res.locals.message = err.message;
+    res.locals.error = process.env.NODE_ENV !== 'production' ? err : {};
+    res.status(err.status || 500);
+    res.render('error');
+});
+
+module.exports=app;
