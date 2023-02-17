@@ -78,7 +78,7 @@ if(process.env.NODE_ENV === 'production') {
 app.use(session(sessionOption));
 app.use(
     cors({
-      origin: ["http://localhost:3000", "https://boj-quizlet.vercel.app"],
+      origin: ["http://localhost:5173", "https://boj-quizlet.vercel.app"],
       credentials: true,
     })
 );
