@@ -1,7 +1,7 @@
 /*문제 정보 모으기*/
 
 const {Problem}=require('./models');
-var axios = require("axios").default;
+let axios = require("axios").default;
 async function add_item(id,dif,name)
 {
   try {
@@ -22,43 +22,48 @@ async function add_item(id,dif,name)
     console.error(error);
   }
 }
-for(let d=1000; d<=9900; d+=100)
+
+function update_problems()
 {
-  let string="";
-  let start=d;
-  let limit=start+99;
-  for(let x=start; x<=limit; x++)
+  for(let d=1000; d<=29000; d+=100)
   {
-    string=string+x;
-    if(x<limit)
+    let string="";
+    let start=d;
+    let limit=start+99;
+    for(let x=start; x<=limit; x++)
     {
-      string=string+",";
-    }
-  }
-  let options = {
-    method: 'GET',
-    url: 'https://solved.ac/api/v3/problem/lookup',
-    params: {problemIds: string},
-    headers: {'Content-Type': 'application/json'}
-  };
-  axios.request(options).then(function (response) {
-    const data=response.data;
-    length=data.length;
-    for(let i=0; i<length; i++)
-    {
-      const input=data[i];
-      const info=JSON.parse(JSON.stringify(input));
-      const id=info.problemId;
-      const name=info.titleKo;
-      const dif=info.level;
-      //console.log(id+" "+name);
-      //console.log(typeof(name));
-      //if(typeof(id)==Number && typeof(name)==String)
+      string=string+x;
+      if(x<limit)
       {
-        add_item(id,dif,name);
+        string=string+",";
       }
     }
-  }).catch(function (error) {
-    console.error(error);
-  });
+    let options = {
+      method: 'GET',
+      url: 'https://solved.ac/api/v3/problem/lookup',
+      params: {problemIds: string},
+      headers: {'Content-Type': 'application/json'}
+    };
+    axios.request(options).then(function (response) {
+      const data=response.data;
+      length=data.length;
+      for(let i=0; i<length; i++)
+      {
+        const input=data[i];
+        const info=JSON.parse(JSON.stringify(input));
+        const id=info.problemId;
+        const name=info.titleKo;
+        const dif=info.level;
+        //console.log(id+" "+name);
+        //console.log(typeof(name));
+        //if(typeof(id)==Number && typeof(name)==String)
+        {
+          add_item(id,dif,name);
+        }
+      }
+    }).catch(function (error) {
+      console.error(error);
+    });
+  }
 }
+module.exports=update_problems;

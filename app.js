@@ -20,6 +20,9 @@ const redis = require('redis');
 const RedisStore = require('connect-redis')(session);
 const logger=require('./logger');
 
+const update_problems=require('./get_data');
+const { update } = require('./models/user');
+
 dotenv.config();
 const redisClient = redis.createClient({
     url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
@@ -85,6 +88,8 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+update_problems();
 
 app.use('/',pageRouter); //메인 화면 <--- 이 부분
 app.use('/api',api);//api 호출하기
