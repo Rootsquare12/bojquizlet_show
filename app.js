@@ -91,8 +91,7 @@ app.use(passport.session());
 
 update_problems();
 
-app.use('/',pageRouter); //메인 화면 <--- 이 부분
-app.use('/api',api);//api 호출하기
+app.use('/',api);//api 호출하기
 
 app.use((req,res,next) => {
     const error=new Error(`${req.method} ${req.url} 라우터가 없습니다!`);
