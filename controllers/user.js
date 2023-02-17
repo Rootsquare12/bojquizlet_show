@@ -1,3 +1,4 @@
+/*유저 관련 정보*/
 const {User}=require('../models');
 exports.findProfile=async (req,res,next) => {
     try
@@ -10,11 +11,11 @@ exports.findProfile=async (req,res,next) => {
         });
         if(info)
         {
-            res.send("Hello World,"+name);
+            res.send(info);
         }
         else
         {
-            next();
+            res.send("그런 사람은 없습니다");
         }
     } catch(err) {
         console.error(err);

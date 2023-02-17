@@ -1,14 +1,12 @@
 const express=require('express');
 const {findProfile} = require('./controllers/user');//유저 관련
-const {callAllProblem,callCertainProblem} = require('./controllers/problems');//문제 관련
+const {howManySolutions,callAllProblem,callCertainProblem} = require('./controllers/problems');//문제 관련
 const {renderSolutions,renderCertainSolution,writeSolution} = require('./controllers/solutions');//해설 관련
 const {uploadSolution} = require('./controllers/post');//해설 관련
 
 const router=express.Router();
 
-router.get('/',(req,res)=>{
-    res.send("안녕하세요 API 입니다.");
-});
+router.get('/',howManySolutions);//메인 화면
 
 router.get('/user/:id',findProfile);//유저 id의 정보
 

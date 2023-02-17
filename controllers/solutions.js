@@ -1,20 +1,23 @@
+/*해설 관련 정보*/
+
 const {Solution}=require('../models');
-exports.renderSolutions=async (req,res,next) => { // 특정 레벨의 문제들만 가져오기
+exports.renderSolutions=async (req,res,next) => { // 특정 문제의 해설들을 가져오기
     try
     {
         const id=req.params.id;
-        const info=await Solution.findAll({
+        /*const info=await Solution.findAll({
             where: {
                 problem_id: id,
             },
-        });
+        });*/
+        const info=await Solution.findAll({});
         res.send(info);
     } catch(err) {
         console.error(err);
     }
 }
 
-exports.renderCertainSolution=async (req,res,next) => { // 특정 레벨의 문제들만 가져오기
+exports.renderCertainSolution=async (req,res,next) => { // 특정 문제의 특정 해설만 가져오기
     try
     {
         const id=req.params.id;
