@@ -45,14 +45,16 @@ exports.writeSolution=async (req,res,next) => { // 특정 문제에 풀이 작�
     {
         const id=req.params.id;
         const user=req.params.user;
+        logger.info(id);
+        logger.info(user);
         const data=await Solution.create({
             content: req.body.solution,
             source_code: req.body.code,
             nickname: user,
             problem_id: id,
         });
-        logger.info("question ",id,',',user," Solution was successfully.");
-        res.send("question ",id,',',user," Solution was successfully.");
+        logger.info("Yahoo");
+        res.send("Thank You!");
     } catch(err) {
         logger.error(err);
         next(err);
