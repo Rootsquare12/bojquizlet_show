@@ -5,15 +5,14 @@ exports.renderSolutions=async (req,res,next) => { // 특정 문제의 해설들�
     try
     {
         const id=req.params.id;
-        /*const info=await Solution.findAll({
+        const info=await Solution.findAll({
             where: {
                 problem_id: id,
             },
-        });*/
-        const info=await Solution.findAll({});
+        });
         res.send(info);
     } catch(err) {
-        console.error(err);
+        logger.error(err);
     }
 }
 
@@ -34,10 +33,10 @@ exports.renderCertainSolution=async (req,res,next) => { // 특정 문제의 특�
         }
         else
         {
-            res.status(404).send("해설을 찾을 수 없습니다.");
+            res.status(404).send("No Solution Found.");
         }
     } catch(err) {
-        console.error(err);
+        logger.error(err);
     }
 }
 
@@ -52,9 +51,9 @@ exports.writeSolution=async (req,res,next) => { // 특정 문제에 풀이 작�
             nickname: user,
             problem_id: id,
         });
-        res.send('풀이가 정상적으로 등록되었습니다.');
+        res.send('question ',id,',',user,' Solution was successfully.');
     } catch(err) {
-        console.error(err);
+        logger.error(err);
     }
 }
 
@@ -64,6 +63,6 @@ exports.uploadPictures=async (req,res,next) => { // 그림 파일 저장하기
         const IMG_URL = `/img/${req.file.filename}`;
         res.json({ url: IMG_URL });
     } catch(err) {
-        console.error(err);
+        logger.error(err);
     }
 }

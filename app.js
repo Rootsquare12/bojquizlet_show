@@ -34,7 +34,7 @@ app.set('port',process.env.PORT || 8001); // 포트 설정
 
 sequelize.sync({force: false}) //데이터베이스 연결. force: true로 하면 데이터베이스를 다시 만들 수 있다.
     .then(() => {
-        console.log('데이터베이스 연결 성공');
+        console.log('Database Connected');
     })
     .catch((err) => {
         console.error(err);
@@ -89,7 +89,7 @@ update_problems();
 app.use('/',api);//api 호출하기
 
 app.use((req,res,next) => {
-    const error=new Error(`${req.method} ${req.url} 라우터가 없습니다!`);
+    const error=new Error(`${req.method} ${req.url} Router Not Found!`);
     error.status=404;
     logger.info("Hello World");
     logger.error(error.message);

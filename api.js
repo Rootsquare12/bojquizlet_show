@@ -4,14 +4,13 @@ const fs=require('fs');
 const {findProfile} = require('./controllers/user');//유저 관련
 const {howManySolutions,callAllProblem,callCertainProblem,getProblemName} = require('./controllers/problems');//문제 관련
 const {renderSolutions,renderCertainSolution,writeSolution,uploadPictures} = require('./controllers/solutions');//해설 관련
-const {uploadSolution} = require('./controllers/post');//해설 관련
 
 const router=express.Router();
 
 try {
     fs.readdirSync('uploads');
   } catch (error) {
-    console.error('uploads 폴더가 없어 uploads 폴더를 생성합니다.');
+    console.error('Creating Upload File.');
     fs.mkdirSync('uploads');
   }
   

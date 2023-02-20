@@ -16,7 +16,7 @@ exports.howManySolutions=async(req,res,next) => { // 현재까지 해설이 달�
         };
         res.send(info);
     } catch(err) {
-        console.error(err);
+        logger.error(err);
     }
 }
 
@@ -31,7 +31,7 @@ exports.callCertainProblem=async (req,res,next) => { // 특정 레벨의 문제 
         });
         res.send(info);
     } catch(err) {
-        console.error(err);
+        logger.error(err);
     }
 }
 exports.callAllProblem=async (req,res,next) => { // 모든 문제 가져오기
@@ -60,7 +60,7 @@ exports.callAllProblem=async (req,res,next) => { // 모든 문제 가져오기
         }
         res.send(data);
     } catch(err) {
-        console.error(err);
+        logger.error(err);
     }
 }
 exports.getProblemName=async (req,res,next) => { // 모든 문제 가져오기
@@ -83,6 +83,6 @@ exports.getProblemName=async (req,res,next) => { // 모든 문제 가져오기
         }
         res.send(data);
     } catch(err) {
-        console.error(err);
+        logger.error(err);
     }
 }
