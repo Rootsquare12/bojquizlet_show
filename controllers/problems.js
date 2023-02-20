@@ -63,3 +63,26 @@ exports.callAllProblem=async (req,res,next) => { // 모든 문제 가져오기
         console.error(err);
     }
 }
+exports.getProblemName=async (req,res,next) => { // 모든 문제 가져오기
+    try
+    {
+        const id=req.params.id;
+        const info=await Problem.findOne({
+            attributes:['problem_name'],
+            where: {
+                problem_id: id,
+            },
+        });
+        if(info)
+        {
+            res.send(info);
+        }
+        else
+        {
+            res.status(404).send("일치하는 문제가 없습니다.");
+        }
+        res.send(data);
+    } catch(err) {
+        console.error(err);
+    }
+}

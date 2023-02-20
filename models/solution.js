@@ -7,12 +7,12 @@ class Solution extends Sequelize.Model
     {
         Solution.init(
             {//각 해법들의 데이터
-                code: {//풀이 일련번호
-                    type:Sequelize.INTEGER.UNSIGNED,
+                content: {//풀이 본문
+                    type:Sequelize.TEXT,
                     allowNull: false,
                 },
-                content: {//글
-                    type:Sequelize.STRING(5000),
+                source_code: {//소스 코드
+                    type:Sequelize.TEXT,
                     allowNull: false,
                 },
                 file: {//첨부파일
@@ -34,7 +34,7 @@ class Solution extends Sequelize.Model
     }
     static associate(db) {
         db.Solution.belongsTo(db.User,{foreignKey:'nickname',targetKey:'nickname'});
-        db.Solution.belongsTo(db.Problem,{foreignKey:'problem_id',targetKey:'problem_id'});//테이블간 관계 다시 설정하기
+        db.Solution.belongsTo(db.Problem,{foreignKey:'problem_id',targetKey:'problem_id'});
         db.Solution.hasMany(db.Comment);
     }
 };

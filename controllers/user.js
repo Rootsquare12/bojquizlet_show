@@ -15,7 +15,7 @@ exports.findProfile=async (req,res,next) => {
         }
         else
         {
-            res.send("그런 사람은 없습니다");
+            res.status(404).send("일치하는 사람이 없습니다");
         }
     } catch(err) {
         console.error(err);
