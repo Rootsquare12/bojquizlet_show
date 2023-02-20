@@ -1,5 +1,5 @@
 /*해설 관련 정보*/
-
+const logger=require('../logger');
 const {Solution}=require('../models');
 exports.renderSolutions=async (req,res,next) => { // 특정 문제의 해설들을 가져오기
     try
@@ -45,15 +45,13 @@ exports.writeSolution=async (req,res,next) => { // 특정 문제에 풀이 작�
     {
         const id=req.params.id;
         const user=req.params.user;
-        logger.info(id);
-        logger.info(user);
-        /*const data=await Solution.create({
+        const data=await Solution.create({
             content: req.body.solution,
             source_code: req.body.code,
             nickname: user,
             problem_id: id,
-        });*/
-        logger.info("Yahoo");
+        });
+        logger.info(user+" has successfully wrote solution at problem "+id+".");
         res.send("Thank You!");
     } catch(err) {
         logger.error(err);

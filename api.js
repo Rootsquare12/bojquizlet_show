@@ -36,7 +36,7 @@ router.get('/problems/level',callAllProblem);//레벨이 id인 문제들을 가�
 router.get('/problems/level/:id',callCertainProblem);//레벨이 id인 문제들을 가져오기
 router.get('/problems/name/:id',getProblemName);//id 번오 문제의 제목 가져오기
 
-router.post('/upload_img',image_upload.array('many'),uploadPictures);//그림 파일 올리기
+router.post('/upload_img',image_upload.array('img'),uploadPictures);//그림 파일 올리기
 router.get('/solutions/:id',renderSolutions);//id 문제의 해설들 가져오기
 router.post('/solutions/:id/write/:user',solution_upload.none(),writeSolution);//id 문제의 해설 쓰기
 router.get('/solutions/:id/:user',renderCertainSolution);//id 문제의 특정 해설 가져오기

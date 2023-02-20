@@ -1,4 +1,5 @@
 /*유저 관련 정보*/
+const logger=require('../logger');
 const {User}=require('../models');
 exports.findProfile=async (req,res,next) => {
     try
@@ -15,7 +16,7 @@ exports.findProfile=async (req,res,next) => {
         }
         else
         {
-            res.status(404).send("일치하는 사람이 없습니다");
+            res.status(404).send("User Not Found.");
         }
     } catch(err) {
         console.error(err);

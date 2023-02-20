@@ -87,6 +87,7 @@ app.use(passport.session());
 update_problems();
 
 app.use('/',api);//api 호출하기
+app.use('/img',express.static(path.join(__dirname,'uploads')));//이미지 보기
 
 app.use((req,res,next) => {
     const error=new Error(`${req.method} ${req.url} Router Not Found!`);

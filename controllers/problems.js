@@ -1,5 +1,5 @@
 /*문제와 관련한 정보*/
-
+const logger=require('../logger');
 const {Op}=require('sequelize');
 const {Problem}=require('../models');
 
