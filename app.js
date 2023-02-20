@@ -91,7 +91,6 @@ app.use('/',api);//api 호출하기
 app.use((req,res,next) => {
     const error=new Error(`${req.method} ${req.url} Router Not Found!`);
     error.status=404;
-    logger.info("Hello World");
     logger.error(error.message);
     next(error);
 });
