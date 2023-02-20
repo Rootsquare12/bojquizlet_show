@@ -55,16 +55,12 @@ exports.writeSolution=async (req,res,next) => { // 특정 문제에 풀이 작�
         res.send("question ",id,',',user," Solution was successfully.");
     } catch(err) {
         logger.error(err);
+        next(err);
     }
 }
 
 exports.uploadPictures=async (req,res,next) => { // 그림 파일 저장하기
-    try
-    {
-        const IMG_URL = `/img/${req.file.filename}`;
-        logger.info(IMG_URL);
-        res.json({ url: IMG_URL });
-    } catch(err) {
-        logger.error(err);
-    }
+    const IMG_URL = `/img/${req.file.filename}`;
+    logger.info(IMG_URL);
+    res.json({ url: IMG_URL });
 }
