@@ -38,7 +38,7 @@ class Problem extends Sequelize.Model
         );
     }
     static associate(db) {
-        db.Problem.hasMany(db.Solution,{foreignKey:'problem_id',targetKey:'problem_id'});
+        db.Problem.hasMany(db.Solution,{foreignKey:'problem_id',sourceKey:'problem_id'});
     }
 };
 

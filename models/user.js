@@ -19,6 +19,7 @@ class User extends Sequelize.Model
                 nickname: {
                     type: Sequelize.STRING(20),
                     allowNull: false,
+                    unique: true,
                 },
                 solved: {//푼 문제 수
                     type: Sequelize.INTEGER.UNSIGNED,
@@ -28,7 +29,7 @@ class User extends Sequelize.Model
                     type: Sequelize.INTEGER.UNSIGNED,
                     allowNull: false,
                 },
-                like: {//받은 좋아요 수
+                likes: {//받은 좋아요 수
                     type: Sequelize.INTEGER.UNSIGNED,
                     allowNull: false,
                 },
@@ -46,7 +47,7 @@ class User extends Sequelize.Model
         );
     }
     static associate(db) {
-        db.User.hasMany(db.Solution,{foreignKey:'nickname',targetKey:'nickname'});
+        db.User.hasMany(db.Solution,{foreignKey:{name:'writer',type:Sequelize.DataTypes.STRING},sourceKey:'nickname'});
     }
 };
 
