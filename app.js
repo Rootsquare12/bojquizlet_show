@@ -9,7 +9,9 @@ const passport=require('passport');
 const {sequelize}=require('./models');
 const passportConfig=require('./passport');
 const cors=require('cors');
+
 const api=require('./api');
+const jwt=require('./routes/jwt_check');
 
 const { authorize } = require('passport');
 const helmet=require('helmet');
@@ -87,6 +89,7 @@ app.use(passport.session());
 update_problems();
 
 app.use('/',api);//api 호출하기
+app.use('/jwt',jwt);//jwt 토큰 인증하기
 app.use('/img',express.static(path.join(__dirname,'uploads')));//이미지 보기
 
 app.use((req,res,next) => {
