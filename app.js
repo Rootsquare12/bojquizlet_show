@@ -27,7 +27,7 @@ const app=express();
 passportConfig();//패스포트 설정
 app.set('port',process.env.PORT || 8001); // 포트 설정
 
-sequelize.sync({force: true}) //데이터베이스 연결. force: true로 하면 데이터베이스를 다시 만들 수 있다.
+sequelize.sync({force: false}) //데이터베이스 연결. force: true로 하면 데이터베이스를 다시 만들 수 있다.
     .then(() => {
         console.log('Database Connected');
     })
@@ -78,7 +78,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-//update_problems();
+update_problems();
 
 app.use('/',api);//api 호출하기
 app.use('/jwt',jwt);//jwt 토큰 인증하기
