@@ -3,7 +3,7 @@ const multer=require('multer');
 const fs=require('fs');
 const {findProfile} = require('./controllers/user');//유저 관련
 const {howManySolutions,callAllProblem,callCertainProblem,getProblemName} = require('./controllers/problems');//문제 관련
-const {renderSolutions,renderCertainSolution,writeSolution,uploadPictures} = require('./controllers/solutions');//해설 관련
+const {renderSolutions,renderCertainSolution,writeSolution,updateSolution,uploadPictures} = require('./controllers/solutions');//해설 관련
 
 const router=express.Router();
 
@@ -38,6 +38,9 @@ router.get('/problems/name/:id',getProblemName);//id 번오 문제의 제목 가
 
 router.post('/upload_img',image_upload.array('img'),uploadPictures);//그림 파일 올리기
 router.get('/solutions/:id',renderSolutions);//id 문제의 해설들 가져오기
-router.post('/solutions/:id/write/:user',solution_upload.none(),writeSolution);//id 문제의 해설 쓰기
+router.post('/solutions/:id/write/:user',solution_upload.none(),writeSolution);//새로운 해설 쓰기
+router.put('/solutions/:id/write/:user/update',solution_upload.none(),updateSolution);//특정 해설 수정하기
+//router.delete('/solutions/:id/write/:user/delete',deleteSolution);//해설 삭제하기
+
 router.get('/solutions/:id/:user',renderCertainSolution);//id 문제의 특정 해설 가져오기
 module.exports=router;

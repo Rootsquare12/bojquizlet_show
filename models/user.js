@@ -48,6 +48,9 @@ class User extends Sequelize.Model
     }
     static associate(db) {
         db.User.hasMany(db.Solution,{foreignKey:{name:'writer',type:Sequelize.DataTypes.STRING},sourceKey:'nickname'});
+        db.User.belongsToMany(db.Solution,{
+            through:'like'
+        })
     }
 };
 

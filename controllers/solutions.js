@@ -62,6 +62,7 @@ exports.writeSolution=async (req,res,next) => { // 특정 문제에 풀이 작�
                 const data=await Solution.create({
                   content: req.body.solution,
                   source_code: req.body.code,
+                  language: req.body.language,
                   writer: user_id,
                   problem_id: id,
                   likes: 0,
@@ -70,6 +71,50 @@ exports.writeSolution=async (req,res,next) => { // 특정 문제에 풀이 작�
                 Problem.increment('posts', { by: 1, where: { problem_id:id}});
                 logger.info(user+" has wrote solution at problem "+id+".");
                 res.send("Solution Written Successfully.");
+            }
+            else
+            {//없는 문제라면
+                res.status(404).send("Problem Not Found.");
+            }
+        }
+        else
+        {//없는 사람이라면
+            res.status(404).send("User Not Found.");
+        }
+    } catch(err) {
+        logger.error(err);
+        next(err);
+    }
+}
+
+exports.updateSolution=async (req,res,next) => { //특정 풀이 수정하기
+    try
+    {
+        const id=req.params.id;
+        const user_id=req.params.user;
+        const user=await User.findOne({
+            where: {
+                nickname:user_id,
+            },
+        });
+        if(user)
+        {
+            const problem=await Problem.findOne({
+                where: {
+                    problem_id:id,
+                },
+            });
+            if(problem)
+            {//유저와 문제 번호가 모두 올바를 경우 풀이를 작성한다.
+                const data=await Solution.update({
+                    content:req.body.solution,
+                    source_code:req.body.code,
+                    language: req.body.language,
+                },{
+                    where:{writer: user_id,problem_id:id},
+                });
+                logger.info(user+" has updated solution at problem "+id+".");
+                res.send("Solution Updated Successfully.");
             }
             else
             {//없는 문제라면

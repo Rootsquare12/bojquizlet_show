@@ -13,11 +13,13 @@ class Solution extends Sequelize.Model
                 },
                 source_code: {//소스 코드
                     type:Sequelize.TEXT,
-                    allowNull: false,
                 },
                 file: {//첨부파일
                     type: Sequelize.STRING(200),
                     allowNull: true,
+                },
+                language: {//소스 코드의 언어 종류
+                    type:Sequelize.ENUM('c_cpp','python','java','javascript','other'),
                 },
                 likes: {//받은 좋아요 수
                     type: Sequelize.INTEGER.UNSIGNED,
@@ -40,6 +42,9 @@ class Solution extends Sequelize.Model
         db.Solution.belongsTo(db.User,{foreignKey:{name:'writer',type:Sequelize.DataTypes.STRING},targetKey:'nickname'});
         db.Solution.belongsTo(db.Problem,{foreignKey:'problem_id',targetKey:'problem_id'});
         db.Solution.hasMany(db.Comment);
+        db.Solution.belongsToMany(db.User,{
+            through:'like'
+        })
     }
 };
 
