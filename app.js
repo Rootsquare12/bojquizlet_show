@@ -59,7 +59,7 @@ app.use(
     })
 );
 
-//update_problems();
+update_problems();
 
 app.use('/',api);//api 호출하기
 app.use('/jwt',jwt);//jwt 토큰 인증하기
