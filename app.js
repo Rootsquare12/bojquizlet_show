@@ -3,7 +3,6 @@ const path=require('path');
 const axios=require('axios');
 const morgan=require('morgan');
 const cookieParser=require('cookie-parser');
-const session=require('express-session');
 const dotenv=require('dotenv');
 const passport=require('passport');
 const {sequelize}=require('./models');
@@ -24,7 +23,6 @@ const { update } = require('./models/user');
 dotenv.config();
 
 const app=express();
-passportConfig();//패스포트 설정
 app.set('port',process.env.PORT || 8001); // 포트 설정
 
 sequelize.sync({force: false}) //데이터베이스 연결. force: true로 하면 데이터베이스를 다시 만들 수 있다.
@@ -54,20 +52,6 @@ app.use(express.static(path.join(__dirname,'public')));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-const sessionOption= {
-    resave: false,
-    saveUninitialized: false,
-    secret: process.env.COOKIE_SECRET,
-    cookie: {
-        httpOnly: true,
-        secure: false,
-    },
-}
-if(process.env.NODE_ENV === 'production') {
-    sessionOption.proxy=true;
-    //sessionOption.cookie.secure=true;
-}
-app.use(session(sessionOption));
 app.use(
     cors({
       origin: ["http://localhost:5173", "https://boj-quizlet.vercel.app"],
@@ -75,10 +59,7 @@ app.use(
     })
 );
 
-app.use(passport.initialize());
-app.use(passport.session());
-
-update_problems();
+//update_problems();
 
 app.use('/',api);//api 호출하기
 app.use('/jwt',jwt);//jwt 토큰 인증하기
