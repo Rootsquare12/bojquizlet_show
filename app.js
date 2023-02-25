@@ -23,7 +23,7 @@ const { update } = require('./models/user');
 dotenv.config();
 
 const app=express();
-app.set('port',process.env.PORT || 8001); // 포트 설정
+app.set('port',process.env.PORT || 3000); // 포트 설정
 
 sequelize.sync({force: true}) //데이터베이스 연결. force: true로 하면 데이터베이스를 다시 만들 수 있다.
     .then(() => {
