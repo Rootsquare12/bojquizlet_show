@@ -54,7 +54,7 @@ app.use(express.urlencoded({extended: false}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(
     cors({
-      origin: ["http://localhost:5173", "https://boj-quizlet.vercel.app"],
+      origin: ["http://localhost:5173", "https://localhost:5173","https://boj-quizlet.vercel.app"],
       credentials: true,
     })
 );
