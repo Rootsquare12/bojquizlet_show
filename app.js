@@ -52,12 +52,13 @@ app.use(express.static(path.join(__dirname,'public')));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-app.use(
-    cors({
-      origin: ["http://localhost:5173", "https://localhost:5173","https://boj-quizlet.vercel.app"],
-      credentials: true,
-    })
-);
+
+const whitelist=["http://localhost:5173","https://localhost:5173","https://boj-quizlet.vercel.app"];
+const corsOptions = {
+    origin: whitelist,
+    credentials: true
+}
+app.use(cors());
 
 update_problems();
 
