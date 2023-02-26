@@ -56,9 +56,10 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 const whitelist=["http://localhost:5173","https://localhost:5173","https://boj-quizlet.vercel.app"];
 const corsOptions = {
     origin: whitelist,
-    credentials: true
+    credentials: true,
+    optionsSuccessStatus: 200,
 }
-app.use(cors());
+app.use(cors(corsOptions));
 
 update_problems();
 
