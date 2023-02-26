@@ -7,7 +7,6 @@ const dotenv=require('dotenv');
 const passport=require('passport');
 const {sequelize}=require('./models');
 const passportConfig=require('./passport');
-const cors=require('cors');
 
 const api=require('./api');
 const jwt=require('./routes/jwt_check');
@@ -53,13 +52,6 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
-const whitelist=["http://localhost:5173","https://localhost:5173","https://boj-quizlet.vercel.app"];
-const corsOptions = {
-    origin: whitelist,
-    credentials: true,
-    optionsSuccessStatus: 200,
-}
-app.use(cors(corsOptions));
 
 update_problems();
 
