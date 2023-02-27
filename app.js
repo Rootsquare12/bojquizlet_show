@@ -27,7 +27,7 @@ const whitelist=["http://localhost:3000","http://localhost:5173","https://localh
 
 app.use(
     cors({
-      origin: whitelist,
+      origin: '*',
       credentials: true,
     })
 );
