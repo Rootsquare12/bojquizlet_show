@@ -23,7 +23,7 @@ const { update } = require('./models/user');
 dotenv.config();
 
 const app=express();
-const whitelist=["http://localhost:3000","http://localhost:5173","https://localhost:5173","https://boj-quizlet.vercel.app"];
+const whitelist=["http://localhost:3000","http://localhost:5173/*","https://localhost:5173/*","https://boj-quizlet.vercel.app/*"];
 const corsOptions = {
     origin: 'http://localhost:5173',
     credentials: true,
