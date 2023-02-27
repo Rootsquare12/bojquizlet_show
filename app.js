@@ -25,13 +25,19 @@ dotenv.config();
 const app=express();
 const whitelist=["http://localhost:3000","http://localhost:5173","https://localhost:5173","https://boj-quizlet.vercel.app"];
 
-app.use((req, res, next) => {
+app.use(
+    cors({
+      origin: whitelist,
+      credentials: true,
+    })
+);
+/*app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', whitelist); 
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     res.setHeader('Access-Control-Allow-Credentials', true);
     next();
-});
+});*/
 
 app.set('port',process.env.PORT || 3000); // 포트 설정
 sequelize.sync({force: false}) //데이터베이스 연결. force: true로 하면 데이터베이스를 다시 만들 수 있다.
@@ -61,7 +67,6 @@ app.use(express.static(path.join(__dirname,'public')));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-
 
 //update_problems();
 
