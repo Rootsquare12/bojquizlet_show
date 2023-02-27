@@ -23,16 +23,22 @@ const { update } = require('./models/user');
 dotenv.config();
 
 const app=express();
-app.set('port',process.env.PORT || 3000); // 포트 설정
-
-const whitelist=["http://localhost:5173","https://localhost:5173","https://boj-quizlet.vercel.app"];
+const whitelist=["http://localhost:3000","http://localhost:5173","https://localhost:5173","https://boj-quizlet.vercel.app"];
 const corsOptions = {
-    origin: whitelist,
+    origin: 'http://localhost:5173',
     credentials: true,
     optionsSuccessStatus: 200,
 }
-app.use(cors(corsOptions));
 
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', whitelist); 
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Accept');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+});
+
+app.set('port',process.env.PORT || 3000); // 포트 설정
 sequelize.sync({force: false}) //데이터베이스 연결. force: true로 하면 데이터베이스를 다시 만들 수 있다.
     .then(() => {
         console.log('Database Connected');
@@ -62,7 +68,7 @@ app.use(express.urlencoded({extended: false}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
 
-update_problems();
+//update_problems();
 
 app.use('/',api);//api 호출하기
 app.use('/jwt',jwt);//jwt 토큰 인증하기
