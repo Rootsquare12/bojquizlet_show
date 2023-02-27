@@ -26,7 +26,7 @@ const app=express();
 const whitelist=["http://localhost:3000","http://localhost:5173","https://localhost:5173","https://boj-quizlet.vercel.app"];
 
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', whiltelist); 
+    res.setHeader('Access-Control-Allow-Origin', whitelist); 
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Accept');
     res.setHeader('Access-Control-Allow-Credentials', true);
