@@ -2,7 +2,7 @@ var axios = require("axios").default;
 
 var options = {
   method: 'GET',
-  url: 'https://solved.ac/api/v3/account/verify_credentials',
+  url: 'https://www.bojquizlet-database.com/problems/level',
   headers: {'Content-Type': 'application/json'}
 };
 

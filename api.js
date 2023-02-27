@@ -7,13 +7,6 @@ const {howManySolutions,callAllProblem,callCertainProblem,getProblemName} = requ
 const {renderSolutions,renderCertainSolution,writeSolution,updateSolution,uploadPictures} = require('./controllers/solutions');//해설 관련
 
 const router=express.Router();
-const whitelist=["http://localhost:5173","https://localhost:5173","https://boj-quizlet.vercel.app"];
-const corsOptions = {
-    origin: whitelist,
-    credentials: true,
-    optionsSuccessStatus: 200,
-}
-router.use(cors(corsOptions));
 
 try {
     fs.readdirSync('uploads');

@@ -1,4 +1,5 @@
 const express=require('express');
+const cors=require('cors');
 const path=require('path');
 const axios=require('axios');
 const morgan=require('morgan');
@@ -23,6 +24,14 @@ dotenv.config();
 
 const app=express();
 app.set('port',process.env.PORT || 3000); // 포트 설정
+
+const whitelist=["http://localhost:5173","https://localhost:5173","https://boj-quizlet.vercel.app"];
+const corsOptions = {
+    origin: whitelist,
+    credentials: true,
+    optionsSuccessStatus: 200,
+}
+app.use(cors(corsOptions));
 
 sequelize.sync({force: false}) //데이터베이스 연결. force: true로 하면 데이터베이스를 다시 만들 수 있다.
     .then(() => {
