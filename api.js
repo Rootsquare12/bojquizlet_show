@@ -7,13 +7,19 @@ const {howManySolutions,callAllProblem,callCertainProblem,getProblemName} = requ
 const {renderSolutions,renderCertainSolution,writeSolution,updateSolution,uploadPictures} = require('./controllers/solutions');//해설 관련
 
 const router=express.Router();
+router.use(
+  cors({
+    origin: '*',
+    credentials: true,
+  })
+);
 
 try {
     fs.readdirSync('uploads');
-  } catch (error) {
+} catch (error) {
     console.error('Creating Upload File.');
     fs.mkdirSync('uploads');
-  }
+}
   
 const image_upload = multer({
   storage: multer.diskStorage({
