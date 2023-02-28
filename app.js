@@ -28,12 +28,12 @@ dotenv.config();
 const app=express();
 const whitelist=["http://localhost:3000","http://localhost:5173","https://localhost:5173","https://boj-quizlet.vercel.app"];
 
-app.use(
+/*app.use(
     cors({
       origin: '*',
       credentials: true,
     })
-);
+);*/
 /*app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', whitelist); 
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
