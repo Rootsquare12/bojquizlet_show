@@ -34,13 +34,14 @@ const whitelist=["http://localhost:3000","http://localhost:5173","https://localh
       credentials: true,
     })
 );*/
-/*app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', whitelist); 
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    res.setHeader('Access-Control-Allow-Credentials', true);
+const corsOptions = (req, res, next) => { 
+    res.header('Access-Control-Allow-Origin', '*'); 
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 
+    'Content-Type, Authorization, Content-Length, X-Requested-With');
     next();
-});*/
+}
+app.use(corsOptions);
 
 app.set('port',process.env.PORT || 3000); // 포트 설정
 sequelize.sync({force: false}) //데이터베이스 연결. force: true로 하면 데이터베이스를 다시 만들 수 있다.
