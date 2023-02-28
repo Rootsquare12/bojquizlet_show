@@ -9,7 +9,10 @@ const passport=require('passport');
 const {sequelize}=require('./models');
 const passportConfig=require('./passport');
 
-const api=require('./api');
+const main=require('./routes/main');
+const user=require('./routes/user');
+const problems=require('./routes/problems');
+const solutions=require('./routes/solutions');
 const jwt=require('./routes/jwt_check');
 
 const { authorize } = require('passport');
@@ -70,7 +73,10 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 
 //update_problems();
 
-app.use('/',api);//api 호출하기
+app.use('/',main);//메인 화면
+app.use('/user',user);//유저 정보
+app.use('/problems',problems);//문제 정보
+app.use('/solutions',solutions);//해설 정보
 app.use('/jwt',jwt);//jwt 토큰 인증하기
 app.use('/img',express.static(path.join(__dirname,'uploads')));//이미지 보기
 

@@ -1,8 +1,10 @@
 const express=require('express');
-const {isLoggedIn,isNotLoggedIn} = require('../middlewares');
-const {callCertainProblem} = require('../controllers/problems');
+const {callAllProblem,callCertainProblem,getProblemName} = require('../controllers/problems');//문제 관련
 
 const router=express.Router();
 
-router.get('/level/:id',callCertainProblem);//특정 레벨의 문제들 불러오기
+router.get('/level',callAllProblem);//레벨이 id인 문제들을 가져오기
+router.get('/level/:id',callCertainProblem);//레벨이 id인 문제들을 가져오기
+router.get('/name/:id',getProblemName);//id 번호 문제의 제목 가져오기
+
 module.exports=router;
