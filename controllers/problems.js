@@ -41,13 +41,7 @@ exports.callAllProblem=async (req,res,next) => { // 모든 문제 가져오기
             };
             data.push(info);
         }
-        const dd={
-            "problem_difficulty": 1,
-            "total": 100,
-            "has_solution": 0
-        }
-        res.send(dd);
-        //res.send(data);
+        res.send(data);
     } catch(err) {
         logger.error(err);
     }
