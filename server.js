@@ -1,4 +1,4 @@
-const http=require('http');
+/*const http=require('http');
 const https=require('https');
 const app = require('./app');
 const fs=require('fs');
@@ -12,4 +12,9 @@ if(process.env.NODE_ENV === 'production') {
     cert: fs.readFileSync('/etc/letsencrypt/live/bojquizlet-database.com/cert.pem')
   };
   https.createServer(options, app).listen(443);
-}
+}*/
+const app = require('./app');
+
+app.listen(app.get('port'), () => {
+  console.log(app.get('port'), '번 포트에서 대기중');
+});
