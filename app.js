@@ -1,5 +1,5 @@
 const express=require('express');
-//const cors=require('cors');
+const cors=require('cors');
 const path=require('path');
 const morgan=require('morgan');
 const cookieParser=require('cookie-parser');
@@ -26,6 +26,12 @@ dotenv.config();
 
 const app=express();
 const whitelist=["http://localhost:3000","http://localhost:5173","https://localhost:5173","https://boj-quizlet.vercel.app"];
+const corsOptions={
+    origin: whitelist,
+    credentials: true
+}
+app.use(cors(corsOptions));
+
 app.set('port', process.env.PORT || 3000);
 
 sequelize.sync({force: false}) //데이터베이스 연결. force: true로 하면 데이터베이스를 다시 만들 수 있다.
@@ -56,7 +62,10 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
-update_problems();
+if(process.env.NODE_ENV === 'production') {
+    update_problems();
+}
+
 
 app.use('/',main);//메인 화면
 app.use('/user',user);//유저 정보
