@@ -3,13 +3,13 @@ const https=require('https');
 const app = require('./app');
 const fs=require('fs');
 
-http.createServer(app).listen(3000);
+http.createServer(app).listen(80);
 
-/*if(process.env.NODE_ENV === 'production') {
+if(process.env.NODE_ENV === 'production') {
   const options = { // letsencrypt로 받은 인증서 경로를 입력
-    ca: fs.readFileSync('/etc/letsencrypt/live/bojquizlet-database.com/fullchain.pem'),
-    key: fs.readFileSync('/etc/letsencrypt/live/bojquizlet-database.com/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/bojquizlet-database.com/cert.pem')
+    ca: fs.readFileSync('/etc/letsencrypt/live/bojquizlet-database.net/fullchain.pem'),
+    key: fs.readFileSync('/etc/letsencrypt/live/bojquizlet-database.net/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/bojquizlet-database.net/cert.pem')
   };
   https.createServer(options, app).listen(443);
-}*/
+}
