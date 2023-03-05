@@ -1,6 +1,7 @@
 /*유저 관련 정보*/
 const logger=require('../logger');
 const {User}=require('../models');
+
 exports.findProfile=async (req,res,next) => {
     try
     {

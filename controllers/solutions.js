@@ -16,7 +16,7 @@ exports.renderSolutions=async (req,res,next) => { // 특정 문제의 해설들�
     }
 }
 
-exports.renderCertainSolution=async (req,res,next) => { // 특정 문제의 특정 해설만 가져오기 : 여기도 수정해야 합니다.
+exports.renderCertainSolution=async (req,res,next) => { // 특정 문제의 특정 해설만 가져오기
     try
     {
         const id=req.params.id;

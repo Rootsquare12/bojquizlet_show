@@ -9,6 +9,7 @@ const {sequelize}=require('./models');
 const passportConfig=require('./passport');
 
 const main=require('./routes/main');
+const auth=require('./routes/auth');
 const user=require('./routes/user');
 const problems=require('./routes/problems');
 const solutions=require('./routes/solutions');
@@ -31,6 +32,10 @@ const corsOptions={
     credentials: true
 }
 app.use(cors(corsOptions));
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
+app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(express.static(path.join(__dirname,'public')));
 
 app.set('port', process.env.PORT || 3000);
 
@@ -57,22 +62,18 @@ else {
     app.use(morgan('dev'));
 }
 
-app.use(express.static(path.join(__dirname,'public')));
-app.use(express.json());
-app.use(express.urlencoded({extended: false}));
-app.use(cookieParser(process.env.COOKIE_SECRET));
-
-if(process.env.NODE_ENV === 'production') {
-    update_problems();
-}
-
-
 app.use('/',main);//메인 화면
+app.use('/auth',auth);//회원가입,로그인,로그아웃
 app.use('/user',user);//유저 정보
 app.use('/problems',problems);//문제 정보
 app.use('/solutions',solutions);//해설 정보
 app.use('/jwt',jwt);//jwt 토큰 인증하기
 app.use('/img',express.static(path.join(__dirname,'uploads')));//이미지 보기
+
+if(process.env.NODE_ENV === 'production') {
+    update_problems();
+}
+//update_problems();
 
 app.use((req,res,next) => {
     const error=new Error(`${req.method} ${req.url} Router Not Found!`);
