@@ -2,7 +2,8 @@ const jwt=require('jsonwebtoken');
 
 exports.verifyToken = (req, res, next) => {
   try {
-     res.locals.decoded = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
+    const key=process.env.JWT_SECRET;
+     req.decoded = jwt.verify(req.headers.authorization, key);
      return next();
   } catch (error) {
      if (error.name === 'TokenExpiredError') { // 유효기간 초과

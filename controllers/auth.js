@@ -60,7 +60,11 @@ exports.loginProcess=async (req, res, next) => {//새로운 회원 가입하기
           expiresIn:"30m",//토큰 유효기간
           issuer:"rootsquare",//토큰 발행자
         })
-        res.status(200).send(token);
+        const info={
+         "user": nick,
+          "token": token
+        }
+        res.status(200).send(info);
       }
       else
       {//비밀번호가 틀린 경우
