@@ -22,15 +22,16 @@ const image_upload = multer({
        cb(null, path.basename(file.originalname, ext) + Date.now() + ext);
      },
    }),
-   limits: { fileSize: 10 * 1024 * 1024 },
+   limits: { fileSize: 5 * 1024 * 1024 },
 });
 const solution_upload=multer();
 
+router.post('/img',image_upload.single('img'),uploadPictures);//그림 파일 올리기
+
 router.get('/:id',verifyToken,renderSolutions);//id 문제의 해설들 가져오기
-router.post('/:id/write/:user',verifyToken,solution_upload.none(),writeSolution);//새로운 해설 쓰기
+router.get('/:id/:user',renderCertainSolution);//id 문제의 특정 해설 가져오기
+router.post('/:id/write/:user',solution_upload.none(),writeSolution);//새로운 해설 쓰기
 router.put('/:id/write/:user/update',verifyToken,solution_upload.none(),updateSolution);//특정 해설 수정하기
-//router.post('/upload_img',image_upload.array('img'),uploadPictures);//그림 파일 올리기
 //router.delete('/:id/write/:user/delete',deleteSolution);//해설 삭제하기
 
-router.get('/:id/:user',renderCertainSolution);//id 문제의 특정 해설 가져오기
 module.exports=router;

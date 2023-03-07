@@ -45,49 +45,42 @@ exports.writeSolution=async (req,res,next) => { // 특정 문제에 풀이 작�
     {
         const id=req.params.id;
         const user_id=req.params.user;
-        const token_name=req.decoded.nickname;
-        if(user_id==token_name)
-        {//토큰 주인과 글 작성자가 일치하는 경우
-            const user=await User.findOne({
+        //const token_name=req.decoded.nickname;
+        const user=await User.findOne({
+            where: {
+                nickname:user_id,
+            },
+        });
+        if(user)
+        {
+            const problem=await Problem.findOne({
                 where: {
-                    nickname:user_id,
+                    problem_id:id,
                 },
             });
-            if(user)
-            {
-                const problem=await Problem.findOne({
-                    where: {
-                        problem_id:id,
-                    },
+            if(problem)
+            {//유저와 문제 번호가 모두 올바를 경우 풀이를 작성한다.
+                const data=await Solution.create({
+                content: req.body.solution,
+                source_code: req.body.code,
+                language: req.body.language,
+                writer: user_id,
+                problem_id: id,
+                likes: 0,
                 });
-                if(problem)
-                {//유저와 문제 번호가 모두 올바를 경우 풀이를 작성한다.
-                    const data=await Solution.create({
-                    content: req.body.solution,
-                    source_code: req.body.code,
-                    language: req.body.language,
-                    writer: user_id,
-                    problem_id: id,
-                    likes: 0,
-                    });
-                    User.increment('wrote', { by: 1, where: { nickname:user_id}});
-                    Problem.increment('posts', { by: 1, where: { problem_id:id}});
-                    logger.info(user+" has wrote solution at problem "+id+".");
-                    res.send("Solution Written Successfully.");
-                }
-                else
-                {//없는 문제라면
-                    res.status(404).send("Problem Not Found.");
-                }
+                User.increment('wrote', { by: 1, where: { nickname:user_id}});
+                Problem.increment('posts', { by: 1, where: { problem_id:id}});
+                logger.info(user+" has wrote solution at problem "+id+".");
+                res.send("Solution Written Successfully.");
             }
             else
-            {//없는 사람이라면
-                res.status(404).send("User Not Found.");
+            {//없는 문제라면
+              res.status(404).send("Problem Not Found.");
             }
         }
         else
-        {//토큰의 주인과 글 작성자가 다른 경우
-            res.status(401).send("Other User's Token.");
+        {//없는 사람이라면
+             res.status(404).send("User Not Found.");
         }
     } catch(err) {
         logger.error(err);
@@ -161,7 +154,7 @@ exports.updateSolution=async (req,res,next) => { //특정 풀이 수정하기
 }
 
 exports.uploadPictures=async (req,res,next) => { // 그림 파일 저장하기
-    const IMG_URL = `/img/${req.file.filename}`;
+    const IMG_URL = `/uploads/${req.file.filename}`;
     logger.info(IMG_URL);
     res.json({ url: IMG_URL });
 }
