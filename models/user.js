@@ -41,15 +41,18 @@ class User extends Sequelize.Model
                 modelName: 'User', //모델 이름
                 tableName: 'users', //테이블 이름
                 paranoid: true, // 삭제 시각
-                charset: 'utf8',
-                collate: 'utf8_general_ci'// 인코딩 방식
+                charset: 'utf8mb4',
+                collate: 'utf8mb4_general_ci'// 인코딩 방식
             }
         );
     }
     static associate(db) {
         db.User.hasMany(db.Solution,{foreignKey:{name:'writer',type:Sequelize.DataTypes.STRING},sourceKey:'nickname'});
         db.User.belongsToMany(db.Solution,{
-            through:'like'
+            through:'like_table',
+            sourceKey:'nickname',
+            targetKey:'id',
+            foreignKey:'user'
         })
     }
 };

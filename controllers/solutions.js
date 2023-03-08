@@ -1,6 +1,8 @@
 /*해설 관련 정보*/
 const logger=require('../logger');
 const {User,Problem,Solution}=require('../models');
+const db=require('../models');
+
 exports.renderSolutions=async (req,res,next) => { // 특정 문제의 해설들을 가져오기
     try
     {
@@ -148,4 +150,54 @@ exports.uploadPictures=async (req,res,next) => { // 그림 파일 저장하기
     const IMG_URL = `/uploads/${req.file.filename}`;
     logger.info(IMG_URL);
     res.json({ url: IMG_URL });
+}
+
+exports.toggleLike=async (req,res,next) => { // 그림 파일 저장하기
+    const problem_id=req.params.id;//문제 번호
+    const writer=req.params.user;//풀이를 쓴 사람
+    const user=req.decoded.nickname;//좋아요를 누르는 사람
+    const solution=await Solution.findOne({
+        raw: true,
+        where: {//우선 그러한 풀이가 있는지 찾는다.
+            writer:writer,
+            problem_id:problem_id,
+        }
+    });
+    if(solution)
+    {//해당 풀이가 존재하는 경우
+        const table=db.sequelize.models.like_table;
+        solution_id=solution.id;
+        const already_liked=await table.findOne({
+            where: {//이 사람이 이 게시글에 좋아요를 이미 눌렀는지
+                user:user,
+                solution:solution_id,
+            }
+        })
+        if(already_liked)
+        {//이 경우 좋아요를 뺀다.
+            table.destroy({//좋아요 테이블에서 해당 정보를 제거한다.
+                where: {
+                    user:user,
+                    solution:solution_id,
+                }
+            })
+            User.increment('likes', { by: -1, where: { nickname:writer}});//풀이를 쓴 사람은 좋아요를 받는다.
+            Solution.increment('likes', { by: -1, where: { problem_id:problem_id,writer:writer}});//그 풀이가 받은 좋아요 개수도 하나 늘린다.
+            res.send("Like removed.");
+        }
+        else
+        {//이 경우 좋아요를 누른다.
+            table.create({//좋아요 테이블에 해당 정보를 등록한다.
+                user:user,
+                solution:solution_id,
+            })
+            User.increment('likes', { by: 1, where: { nickname:writer}});//풀이를 쓴 사람은 좋아요를 받는다.
+            Solution.increment('likes', { by: 1, where: { problem_id:problem_id,writer:writer}});//그 풀이가 받은 좋아요 개수도 하나 늘린다.
+            res.send("Like added.");
+        }
+    }
+    else
+    {//존재하지 않는 경우
+        res.status(404).send("No such solution.")
+    }
 }

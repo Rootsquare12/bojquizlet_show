@@ -19,8 +19,8 @@ class Comment extends Sequelize.Model
                 modelName: 'Comment', //모델 이름
                 tableName: 'comments', //테이블 이름
                 paranoid: true, // 삭제 시각
-                charset: 'utf8',
-                collate: 'utf8_general_ci'// 인코딩 방식
+                charset: 'utf8mb4',
+                collate: 'utf8mb4_general_ci'// 인코딩 방식
             }
         );
     }

@@ -33,8 +33,8 @@ class Solution extends Sequelize.Model
                 modelName: 'Solution', //모델 이름
                 tableName: 'solutions', //테이블 이름
                 paranoid: true, // 삭제 시각
-                charset: 'utf8',
-                collate: 'utf8_general_ci'// 인코딩 방식
+                charset: 'utf8mb4',
+                collate: 'utf8mb4_general_ci'// 인코딩 방식
             }
         );
     }
@@ -43,7 +43,10 @@ class Solution extends Sequelize.Model
         db.Solution.belongsTo(db.Problem,{foreignKey:'problem_id',targetKey:'problem_id'});
         db.Solution.hasMany(db.Comment);
         db.Solution.belongsToMany(db.User,{
-            through:'like'
+            through:'like_table',
+            sourceKey:'id',
+            targetKey:'nickname',
+            foreignKey:'solution'
         })
     }
 };
