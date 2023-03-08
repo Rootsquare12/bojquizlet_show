@@ -7,14 +7,8 @@ exports.verifyToken = (req, res, next) => {
      return next();
   } catch (error) {
      if (error.name === 'TokenExpiredError') { // 유효기간 초과
-       return res.status(419).json({
-         code: 419,
-         message: 'Timed Out',
-       });
+       res.status(419).send("Timed Out");
      }
-     return res.status(401).json({
-       code: 401,
-       message: 'Invalid Token',
-     });
+     res.status(401).send("Invalid User.");
    }
 };

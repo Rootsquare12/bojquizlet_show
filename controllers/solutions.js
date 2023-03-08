@@ -44,8 +44,7 @@ exports.writeSolution=async (req,res,next) => { // 특정 문제에 풀이 작�
     try
     {
         const id=req.params.id;
-        const user_id=req.params.user;
-        //const token_name=req.decoded.nickname;
+        const user_id=req.decoded.nickname;
         const user=await User.findOne({
             where: {
                 nickname:user_id,
@@ -92,60 +91,52 @@ exports.updateSolution=async (req,res,next) => { //특정 풀이 수정하기
     try
     {
         const id=req.params.id;
-        const user_id=req.params.user;
-        const token_name=req.decoded.nickname;
-        if(user_id==token_name)
-        {//토큰의 주인과 글 수정자가 같은 경우.
-            const user=await User.findOne({
+        const user_id=req.decoded.nickname;
+        const user=await User.findOne({
+            where: {
+                nickname:user_id,
+            },
+        });
+        if(user)
+        {
+            const problem=await Problem.findOne({
                 where: {
-                    nickname:user_id,
+                    problem_id:id,
                 },
             });
-            if(user)
-            {
-                const problem=await Problem.findOne({
+            if(problem)
+            {//유저와 문제 번호가 모두 올바를 경우, 현 유저가 기존에 쓴 풀이를 찾는다.
+                const exSolution=await Solution.findOne({
                     where: {
+                        writer:user_id,
                         problem_id:id,
-                    },
+                    }
                 });
-                if(problem)
-                {//유저와 문제 번호가 모두 올바를 경우, 현 유저가 기존에 쓴 풀이를 찾는다.
-                    const exSolution=await Solution.findOne({
-                        where: {
-                            writer:user_id,
-                            problem_id:id,
-                        }
-                    })
-                    if(exSolution)
-                    {//그런 풀이가 존재한다면 수정한다.
-                        const data=await Solution.update({
-                            content:req.body.solution,
-                            source_code:req.body.code,
-                            language: req.body.language,
-                        },{
-                            where:{writer: user_id,problem_id:id},
-                        });
-                        logger.info(user+" has updated solution at problem "+id+".");
-                        res.send("Solution Updated Successfully.");
-                    }
-                    else
-                    {//그런 풀이가 없는 경우
-                        res.status(404).send("Solution Not Found.");
-                    }
+                if(exSolution)
+                {//그런 풀이가 존재한다면 수정한다.
+                    const data=await Solution.update({
+                        content:req.body.solution,
+                        source_code:req.body.code,
+                        language: req.body.language,
+                    },{
+                        where:{writer: user_id,problem_id:id},
+                    });
+                    logger.info(user+" has updated solution at problem "+id+".");
+                    res.send("Solution Updated Successfully.");
                 }
                 else
-                {//없는 문제라면
-                    res.status(404).send("Problem Not Found.");
+                {//그런 풀이가 없는 경우
+                    res.status(404).send("Solution Not Found.");
                 }
             }
             else
-            {//없는 사람이라면
-                res.status(404).send("User Not Found.");
+            {//없는 문제라면
+                res.status(404).send("Problem Not Found.");
             }
         }
         else
-        {//토큰의 주인과 글 수정자가 다른 경우
-            res.status(401).send("Other User's Token.");
+        {//없는 사람이라면
+            res.status(404).send("User Not Found.");
         }
     } catch(err) {
         logger.error(err);
