@@ -23,19 +23,31 @@ exports.renderCertainSolution=async (req,res,next) => { // 특정 문제의 특�
     {
         const id=req.params.id;
         const user=req.params.user;
-        const info=await Solution.findAll({
-            where: {
-                problem_id: id,
-                writer: user,
-            },
+        const exist=await User.findOne({//해당 유저가 있는지 확인한다.
+            raw:true,
+            where:{nickname:user}
         });
-        if(info)
-        {
-            res.send(info);
+        if(exist)
+        {//유저가 존재한다면 그 유저가 이 문제에 쓴 해설을 갖고온다.
+            const user_id=exist.id;
+            const info=await Solution.findOne({
+                where: {
+                    problem_id: id,
+                    writer: user_id,
+                },
+            });
+            if(info)
+            {
+                res.send(info);
+            }
+            else
+            {
+                res.status(404).send("No Solution Found.");
+            }
         }
         else
-        {
-            res.status(404).send("No Solution Found.");
+        {//유저 이름이 잘못된 경우
+            res.status(404).send("User Not found.");
         }
     } catch(err) {
         logger.error(err);
@@ -46,16 +58,16 @@ exports.writeSolution=async (req,res,next) => { // 특정 문제에 풀이 작�
     try
     {
         const id=req.params.id;
-        const user_id=req.decoded.nickname;
+        const user_id=req.decoded.user_id;//유저가 가진 jwt토큰을 해독했을때, 나온 아이디
         const user=await User.findOne({
             where: {
-                nickname:user_id,
+                id:user_id,
             },
         });
         if(user)
         {
             const problem=await Problem.findOne({
-                where: {
+                where: {//문제번호 id인 문제가 있는지 확인한다.
                     problem_id:id,
                 },
             });
@@ -69,9 +81,8 @@ exports.writeSolution=async (req,res,next) => { // 특정 문제에 풀이 작�
                 problem_id: id,
                 likes: 0,
                 });
-                User.increment('wrote', { by: 1, where: { nickname:user_id}});
-                Problem.increment('posts', { by: 1, where: { problem_id:id}});
-                logger.info(user+" has wrote solution at problem "+id+".");
+                User.increment('wrote', { by: 1, where: {id:user_id}});
+                Problem.increment('posts', { by: 1, where: {problem_id:id}});
                 res.send("Solution Written Successfully.");
             }
             else
@@ -93,10 +104,10 @@ exports.updateSolution=async (req,res,next) => { //특정 풀이 수정하기
     try
     {
         const id=req.params.id;
-        const user_id=req.decoded.nickname;
+        const user_id=req.decoded.user_id;//유저가 가진 jwt토큰을 해독했을때, 나온 아이디
         const user=await User.findOne({
             where: {
-                nickname:user_id,
+                id:user_id,
             },
         });
         if(user)
@@ -116,14 +127,13 @@ exports.updateSolution=async (req,res,next) => { //특정 풀이 수정하기
                 });
                 if(exSolution)
                 {//그런 풀이가 존재한다면 수정한다.
-                    const data=await Solution.update({
+                    await Solution.update({
                         content:req.body.solution,
                         source_code:req.body.code,
                         language: req.body.language,
                     },{
-                        where:{writer: user_id,problem_id:id},
+                        where:{writer:user_id,problem_id:id},
                     });
-                    logger.info(user+" has updated solution at problem "+id+".");
                     res.send("Solution Updated Successfully.");
                 }
                 else
@@ -146,58 +156,70 @@ exports.updateSolution=async (req,res,next) => { //특정 풀이 수정하기
     }
 }
 
-exports.uploadPictures=async (req,res,next) => { // 그림 파일 저장하기
+exports.uploadPictures=async (req,res,next) => { //그림 파일 저장하기
     const IMG_URL = `/uploads/${req.file.filename}`;
     logger.info(IMG_URL);
     res.json({ url: IMG_URL });
 }
 
-exports.toggleLike=async (req,res,next) => { // 그림 파일 저장하기
+exports.toggleLike=async (req,res,next) => { //좋아요 표시하기
     const problem_id=req.params.id;//문제 번호
     const writer=req.params.user;//풀이를 쓴 사람
-    const user=req.decoded.nickname;//좋아요를 누르는 사람
-    const solution=await Solution.findOne({
-        raw: true,
-        where: {//우선 그러한 풀이가 있는지 찾는다.
-            writer:writer,
-            problem_id:problem_id,
-        }
+    const user_id=req.decoded.user_id;//좋아요를 누르는 사람
+    const exist=await User.findOne({//해당 유저가 있는지 확인한다.
+        raw:true,
+        where:{nickname:writer}
     });
-    if(solution)
-    {//해당 풀이가 존재하는 경우
-        const table=db.sequelize.models.like_table;
-        solution_id=solution.id;
-        const already_liked=await table.findOne({
-            where: {//이 사람이 이 게시글에 좋아요를 이미 눌렀는지
-                user:user,
-                solution:solution_id,
+    if(exist)
+    {//글 쓴 사람이 실제로 있는 사람이라면
+        const writer_id=exist.id;
+        const solution=await Solution.findOne({
+            raw: true,
+            where: {//우선 그러한 풀이가 있는지 찾는다.
+                writer:writer_id,
+                problem_id:problem_id,
             }
-        })
-        if(already_liked)
-        {//이 경우 좋아요를 뺀다.
-            table.destroy({//좋아요 테이블에서 해당 정보를 제거한다.
-                where: {
-                    user:user,
+        });
+        if(solution)
+        {//해당 풀이가 존재하는 경우
+            const table=db.sequelize.models.like_table;
+            solution_id=solution.id;
+            const already_liked=await table.findOne({
+                where: {//이 사람이 이 게시글에 좋아요를 이미 눌렀는지
+                    user:user_id,
                     solution:solution_id,
                 }
             })
-            User.increment('likes', { by: -1, where: { nickname:writer}});//풀이를 쓴 사람은 좋아요를 받는다.
-            Solution.increment('likes', { by: -1, where: { problem_id:problem_id,writer:writer}});//그 풀이가 받은 좋아요 개수도 하나 늘린다.
-            res.send("Like removed.");
+            if(already_liked)
+            {//이 경우 좋아요를 뺀다.
+                table.destroy({//좋아요 테이블에서 해당 정보를 제거한다.
+                    where: {
+                        user:user_id,
+                        solution:solution_id,
+                    }
+                })
+                User.increment('likes', { by: -1, where: { nickname:writer}});
+                Solution.increment('likes', { by: -1, where: { problem_id:problem_id,writer:writer_id}});
+                res.send("Like removed.");
+            }
+            else
+            {//이 경우 좋아요를 누른다.
+                table.create({//좋아요 테이블에 해당 정보를 등록한다.
+                    user:user_id,
+                    solution:solution_id,
+                })
+                User.increment('likes', { by: 1, where: { nickname:writer}});//풀이를 쓴 사람은 좋아요를 받는다.
+                Solution.increment('likes', { by: 1, where: { problem_id:problem_id,writer:writer_id}});//그 풀이가 받은 좋아요 개수도 하나 늘린다.
+                res.send("Like added.");
+            }
         }
         else
-        {//이 경우 좋아요를 누른다.
-            table.create({//좋아요 테이블에 해당 정보를 등록한다.
-                user:user,
-                solution:solution_id,
-            })
-            User.increment('likes', { by: 1, where: { nickname:writer}});//풀이를 쓴 사람은 좋아요를 받는다.
-            Solution.increment('likes', { by: 1, where: { problem_id:problem_id,writer:writer}});//그 풀이가 받은 좋아요 개수도 하나 늘린다.
-            res.send("Like added.");
+        {//존재하지 않는 경우
+            res.status(404).send("No such solution.")
         }
     }
     else
-    {//존재하지 않는 경우
-        res.status(404).send("No such solution.")
+    {//글쓴사람 이름이 잘못된 경우
+        res.status(404).send("No such user.");
     }
 }

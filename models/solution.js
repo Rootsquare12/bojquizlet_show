@@ -39,13 +39,11 @@ class Solution extends Sequelize.Model
         );
     }
     static associate(db) {
-        db.Solution.belongsTo(db.User,{foreignKey:{name:'writer',type:Sequelize.DataTypes.STRING},targetKey:'nickname'});
+        db.Solution.belongsTo(db.User,{foreignKey:'writer',targetKey:'id'});
         db.Solution.belongsTo(db.Problem,{foreignKey:'problem_id',targetKey:'problem_id'});
         db.Solution.hasMany(db.Comment);
         db.Solution.belongsToMany(db.User,{
             through:'like_table',
-            sourceKey:'id',
-            targetKey:'nickname',
             foreignKey:'solution'
         })
     }
