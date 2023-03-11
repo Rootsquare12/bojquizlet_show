@@ -12,7 +12,7 @@ exports.renderSolutions=async (req,res,next) => { // 특정 문제의 해설들�
                 problem_id: id,
             },
         });
-        res.send(info);
+        res.status(200).send(info);
     } catch(err) {
         logger.error(err);
     }

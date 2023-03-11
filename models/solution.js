@@ -1,4 +1,4 @@
-//풀이 정보(TODO)
+//풀이 정보
 const Sequelize=require('sequelize');
 
 class Solution extends Sequelize.Model

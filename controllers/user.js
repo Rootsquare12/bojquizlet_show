@@ -1,6 +1,6 @@
 /*유저 관련 정보*/
 const logger=require('../logger');
-const {User}=require('../models');
+const {User,Solution}=require('../models');
 
 exports.findProfile=async (req,res,next) => {
     try
@@ -13,7 +13,7 @@ exports.findProfile=async (req,res,next) => {
         });
         if(info)
         {
-            res.send(info);
+            res.status(200).send(info);
         }
         else
         {

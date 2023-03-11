@@ -6,7 +6,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production PORT=80 pm2 start server.js -i 0",
     "dev": "nodemon server",
-    "test": "jest"
+    "test": "jest --detectOpenHandles"
   },
   "author": "rootsquare",
   "license": "MIT",

@@ -7,15 +7,15 @@ module.exports = {
       database: "bojquizlet",
       host: "127.0.0.1",
       dialect: "mysql",
-      timezone: "Asia/Seoul"
+      timezone: "+09:00"
     },
     test: {
       username: "root",
       password: process.env.SEQUELIZE_PASSWORD,
-      database: "bojquizlet_test",
+      database: "bojquizlet",
       host: "127.0.0.1",
       dialect: "mysql",
-      timezone: "Asia/Seoul"
+      timezone: "+09:00"
     },
     production: {
       username: "root",
@@ -24,7 +24,7 @@ module.exports = {
       host: "127.0.0.1",
       dialect: "mysql",
       logging: false,
-      timezone: "Asia/Seoul"
+      timezone: "+09:00"
     }
   }
   
