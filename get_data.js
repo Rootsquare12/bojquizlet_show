@@ -17,6 +17,17 @@ async function add_item(id,dif,name)
         .then(()=>{console.log(id+"번 문제 업로드 완료.")})
         .catch(err => {console.log(err)});
     }
+    else
+    {
+      const info=await Problem.update({
+        problem_difficulty:dif,
+        problem_name:name,
+      },{
+        where:{problem_id:id},
+      })
+      .then(()=>{console.log(id+"번 문제 업데이트 완료.")})
+      .catch(err => {console.log(err)});
+    }
   }
   catch(error) {
     console.error(error);
