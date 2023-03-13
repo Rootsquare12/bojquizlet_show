@@ -157,9 +157,15 @@ exports.updateSolution=async (req,res,next) => { //특정 풀이 수정하기
 }
 
 exports.uploadPictures=async (req,res,next) => { //그림 파일 저장하기
-    const IMG_URL = `/uploads/${req.file.filename}`;
-    logger.info(IMG_URL);
-    res.json({ url: IMG_URL });
+    try
+    {
+        const IMG_URL = `/uploads/${req.file.filename}`;
+        logger.info(IMG_URL);
+        res.json({ url: IMG_URL });
+    } catch(err) {
+        console.log("An Error has occured!");
+        logger.error(err);
+    }
 }
 
 exports.toggleLike=async (req,res,next) => { //좋아요 표시하기
