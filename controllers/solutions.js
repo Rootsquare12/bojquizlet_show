@@ -8,6 +8,10 @@ exports.renderSolutions=async (req,res,next) => { // 특정 문제의 해설들�
     {
         const id=req.params.id;
         const info=await Solution.findAll({
+            include:[{
+                model:User,
+                attributes:['nickname'],
+            }],
             where: {
                 problem_id: id,
             },
