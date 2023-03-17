@@ -18,7 +18,7 @@ exports.renderSolutions=async (req,res,next) => { // 특정 문제의 해설들�
         });
         res.status(200).send(info);
     } catch(err) {
-        logger.error("Problem Occured While uploading image.");
+        logger.error(err);
     }
 }
 
@@ -168,7 +168,7 @@ exports.uploadPictures=async (req,res,next) => { //그림 파일 저장하기
         res.json({ url: IMG_URL });
     } catch(err) {
         console.log("An Error has occured!");
-        logger.error(err);
+        logger.error("Error occured while Uploading image.");
     }
 }
 
