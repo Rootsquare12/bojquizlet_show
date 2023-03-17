@@ -4,6 +4,7 @@ const {verifyToken}=require('../middlewares');
 const router=express.Router();
 const multer=require('multer');
 const fs=require('fs');
+const path=require('path');
 
 try {
     fs.readdirSync('uploads');
