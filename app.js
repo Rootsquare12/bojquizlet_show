@@ -71,7 +71,7 @@ app.use('/solutions',solutions);//해설 정보
 //app.use('/jwt',jwt);//jwt 토큰 인증하기
 
 if(process.env.NODE_ENV === 'production') {
-    update_problems();
+    //update_problems();
 }
 //update_problems();
 

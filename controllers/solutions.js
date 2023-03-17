@@ -18,7 +18,7 @@ exports.renderSolutions=async (req,res,next) => { // 특정 문제의 해설들�
         });
         res.status(200).send(info);
     } catch(err) {
-        logger.error(err);
+        logger.error("Problem Occured While uploading image.");
     }
 }
 
