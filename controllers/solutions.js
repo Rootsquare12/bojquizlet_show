@@ -173,63 +173,106 @@ exports.uploadPictures=async (req,res,next) => { //그림 파일 저장하기
 }
 
 exports.toggleLike=async (req,res,next) => { //좋아요 표시하기
-    const problem_id=req.params.id;//문제 번호
-    const writer=req.params.user;//풀이를 쓴 사람
-    const user_id=req.decoded.user_id;//좋아요를 누르는 사람
-    const exist=await User.findOne({//해당 유저가 있는지 확인한다.
-        raw:true,
-        where:{nickname:writer}
-    });
-    if(exist)
-    {//글 쓴 사람이 실제로 있는 사람이라면
-        const writer_id=exist.id;
+    try
+    {
+        const problem_id=req.params.id;//문제 번호
+        const writer=req.params.user;//풀이를 쓴 사람
+        const user_id=req.decoded.user_id;//좋아요를 누르는 사람
+        const exist=await User.findOne({//해당 유저가 있는지 확인한다.
+            raw:true,
+            where:{nickname:writer}
+        });
+        if(exist)
+        {//글 쓴 사람이 실제로 있는 사람이라면
+            const writer_id=exist.id;
+            const solution=await Solution.findOne({
+                raw: true,
+                where: {//우선 그러한 풀이가 있는지 찾는다.
+                    writer:writer_id,
+                    problem_id:problem_id,
+                }
+            });
+            if(solution)
+            {//해당 풀이가 존재하는 경우
+                const table=db.sequelize.models.like_table;
+                solution_id=solution.id;
+                const already_liked=await table.findOne({
+                    where: {//이 사람이 이 게시글에 좋아요를 이미 눌렀는지
+                        user:user_id,
+                        solution:solution_id,
+                    }
+                })
+                if(already_liked)
+                {//이 경우 좋아요를 뺀다.
+                    table.destroy({//좋아요 테이블에서 해당 정보를 제거한다.
+                        where: {
+                            user:user_id,
+                            solution:solution_id,
+                        }
+                    })
+                    User.increment('likes', { by: -1, where: { nickname:writer}});
+                    Solution.increment('likes', { by: -1, where: { problem_id:problem_id,writer:writer_id}});
+                    res.send("Like removed.");
+                }
+                else
+                {//이 경우 좋아요를 누른다.
+                    table.create({//좋아요 테이블에 해당 정보를 등록한다.
+                        user:user_id,
+                        solution:solution_id,
+                    })
+                    User.increment('likes', { by: 1, where: { nickname:writer}});//풀이를 쓴 사람은 좋아요를 받는다.
+                    Solution.increment('likes', { by: 1, where: { problem_id:problem_id,writer:writer_id}});//그 풀이가 받은 좋아요 개수도 하나 늘린다.
+                    res.send("Like added.");
+                }
+            }
+            else
+            {//존재하지 않는 경우
+                res.status(404).send("No such solution.")
+            }
+        }
+        else
+        {//글쓴사람 이름이 잘못된 경우
+            res.status(404).send("No such user.");
+        }
+    } catch(err) {
+        logger.error(err);
+    }
+}
+
+exports.deleteSolution=async (req,res,next) => { //풀이 삭제하기
+    try
+    {
+        const problem_id=req.params.id;//문제 번호
+        const user_id=req.decoded.user_id;//좋아요를 누르는 사람
         const solution=await Solution.findOne({
             raw: true,
             where: {//우선 그러한 풀이가 있는지 찾는다.
-                writer:writer_id,
+                writer:user_id,
                 problem_id:problem_id,
             }
         });
         if(solution)
         {//해당 풀이가 존재하는 경우
+            const cnt=solution.likes;//현재까지 이 풀이가 받은 좋아요 개수
+            const solution_id=solution.id;//해설 일련번호
             const table=db.sequelize.models.like_table;
-            solution_id=solution.id;
-            const already_liked=await table.findOne({
-                where: {//이 사람이 이 게시글에 좋아요를 이미 눌렀는지
-                    user:user_id,
-                    solution:solution_id,
-                }
+            User.decrement('likes', { by: cnt, where: {id:user_id}});//이 사람이 받은 좋아요 제거하기
+            table.destroy({
+                where: {solution: solution_id},
+            });
+            Solution.destroy({
+                where:{
+                    writer:user_id,
+                    problem_id:problem_id,
+                },
             })
-            if(already_liked)
-            {//이 경우 좋아요를 뺀다.
-                table.destroy({//좋아요 테이블에서 해당 정보를 제거한다.
-                    where: {
-                        user:user_id,
-                        solution:solution_id,
-                    }
-                })
-                User.increment('likes', { by: -1, where: { nickname:writer}});
-                Solution.increment('likes', { by: -1, where: { problem_id:problem_id,writer:writer_id}});
-                res.send("Like removed.");
-            }
-            else
-            {//이 경우 좋아요를 누른다.
-                table.create({//좋아요 테이블에 해당 정보를 등록한다.
-                    user:user_id,
-                    solution:solution_id,
-                })
-                User.increment('likes', { by: 1, where: { nickname:writer}});//풀이를 쓴 사람은 좋아요를 받는다.
-                Solution.increment('likes', { by: 1, where: { problem_id:problem_id,writer:writer_id}});//그 풀이가 받은 좋아요 개수도 하나 늘린다.
-                res.send("Like added.");
-            }
+            res.status(200).send("Solution Deleted Successful.");
         }
         else
-        {//존재하지 않는 경우
-            res.status(404).send("No such solution.")
+        {
+            res.status(404).send("Solution not found.")
         }
-    }
-    else
-    {//글쓴사람 이름이 잘못된 경우
-        res.status(404).send("No such user.");
+    } catch(err) {
+        logger.error(err);
     }
 }

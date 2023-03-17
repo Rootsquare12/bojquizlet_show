@@ -1,5 +1,5 @@
 const express=require('express');
-const {renderSolutions,renderCertainSolution,writeSolution,updateSolution,uploadPictures,toggleLike} = require('../controllers/solutions');//해설 관련
+const {renderSolutions,renderCertainSolution,writeSolution,updateSolution,uploadPictures,toggleLike,deleteSolution} = require('../controllers/solutions');//해설 관련
 const {verifyToken}=require('../middlewares');
 const router=express.Router();
 const multer=require('multer');
@@ -33,6 +33,6 @@ router.get('/find/:id/:user',verifyToken,renderCertainSolution);//id 문제의 �
 router.put('/find/:id/:user/toggle_like',verifyToken,toggleLike);//id 문제의 특정 해설에 좋아요 표시하기
 router.post('/write/:id',verifyToken,solution_upload.none(),writeSolution);//새로운 해설 쓰기
 router.put('/update/:id',verifyToken,solution_upload.none(),updateSolution);//특정 해설 수정하기
-//router.delete('/:id/write/:user/delete',deleteSolution);//해설 삭제하기
+router.delete('/delete/:id',verifyToken,deleteSolution);//유저가 특정 문제에 쓴 본인의 해설 삭제하기
 
 module.exports=router;

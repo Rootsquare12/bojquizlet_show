@@ -68,7 +68,6 @@ app.use('/auth',auth);//회원가입,로그인,로그아웃
 app.use('/user',user);//유저 정보
 app.use('/problems',problems);//문제 정보
 app.use('/solutions',solutions);//해설 정보
-//app.use('/jwt',jwt);//jwt 토큰 인증하기
 
 if(process.env.NODE_ENV === 'production') {
     //update_problems();
