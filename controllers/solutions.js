@@ -310,6 +310,8 @@ exports.deleteSolution=async (req,res,next) => { //풀이 삭제하기
             const solution_id=solution.id;//해설 일련번호
             const table=db.sequelize.models.like_table;
             User.decrement('likes', { by: cnt, where: {id:user_id}});//이 사람이 받은 좋아요 제거하기
+            User.decrement('wrote', { by: -1, where: {id:user_id}});//이 사람이 쓴 해설의 수 하나 빼기
+            Problem.decrement('posts',{ by: -1, where: {problem_id:problem_id}});//이 문제에 달린 해설의 수 하나 빼기
             table.destroy({
                 where: {solution: solution_id},
             });
