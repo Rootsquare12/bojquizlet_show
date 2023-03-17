@@ -204,11 +204,11 @@ exports.solutionLiked=async (req,res,next) => { //유저가 현재 보고 있는
                 })
                 if(already_liked)
                 {//좋아요를 이미 한 상태
-                    res.status(200).send("Liked.");
+                    res.status(200).send("True");
                 }
                 else
                 {//좋아요를 하지 않은 상태
-                    res.status(200).send("Not Liked.");
+                    res.status(200).send("False");
                 }
             }
             else
