@@ -26,10 +26,10 @@ const image_upload = multer({
 });
 const solution_upload=multer();
 
-router.post('/img',image_upload.single('img'),uploadPictures);//그림 파일 올리기
+router.post('/img',verifyToken,image_upload.single('img'),uploadPictures);//그림 파일 올리기
 
-router.get('/find/:id',verifyToken,renderSolutions);//id 문제의 해설들 가져오기
-router.get('/find/:id/:user',renderCertainSolution);//id 문제의 특정 해설 가져오기
+router.get('/find/:id',renderSolutions);//id 문제의 해설들 가져오기
+router.get('/find/:id/:user',verifyToken,renderCertainSolution);//id 문제의 특정 해설 가져오기
 router.put('/find/:id/:user/toggle_like',verifyToken,toggleLike);//id 문제의 특정 해설에 좋아요 표시하기
 router.post('/write/:id',verifyToken,solution_upload.none(),writeSolution);//새로운 해설 쓰기
 router.put('/update/:id',verifyToken,solution_upload.none(),updateSolution);//특정 해설 수정하기
