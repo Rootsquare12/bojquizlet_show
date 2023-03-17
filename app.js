@@ -36,7 +36,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(express.static(path.join(__dirname,'public')));
-app.use('/img',express.static(path.join(__dirname,'uploads')));
+app.use('/uploads',express.static(path.join(__dirname,'uploads')));
 
 app.set('port', process.env.PORT || 3000);
 
