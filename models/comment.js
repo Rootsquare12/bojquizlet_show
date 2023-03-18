@@ -25,7 +25,8 @@ class Comment extends Sequelize.Model
         );
     }
     static associate(db) {
-        db.Comment.belongsTo(db.Solution);
+        db.Comment.belongsTo(db.Solution,{foreignKey:'solution_id',targetKey:'id'});
+        db.Comment.belongsTo(db.User,{foreignKey:'writer',targetKey:'id'});
     }
 };
 
