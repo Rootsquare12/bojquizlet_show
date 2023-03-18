@@ -27,7 +27,7 @@ const { update } = require('./models/user');
 dotenv.config();
 
 const app=express();
-const whitelist=["http://localhost:3000","http://localhost:5173","https://localhost:5173","https://www.solut.kr/","https://solut.kr"];
+const whitelist=["http://localhost:3000","http://localhost:5173","https://localhost:5173","https://www.solut.kr","https://solut.kr"];
 const corsOptions={//화이트리스트
     origin: whitelist,
     credentials: true
@@ -41,7 +41,7 @@ app.use('/uploads',express.static(path.join(__dirname,'uploads')));
 
 app.set('port', process.env.PORT || 3000);
 
-sequelize.sync({force: true}) //데이터베이스 연결. force: true로 하면 데이터베이스를 다시 만들 수 있다.
+sequelize.sync({force: false}) //데이터베이스 연결. force: true로 하면 데이터베이스를 다시 만들 수 있다.
     .then(() => {
         console.log('Database Connected');
     })

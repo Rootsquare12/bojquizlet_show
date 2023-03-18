@@ -15,6 +15,9 @@ exports.renderSolutions=async (req,res,next) => { // 특정 문제의 해설들�
             where: {
                 problem_id: id,
             },
+            order:[//좋아요 많은 순으로
+                ['likes','DESC'],
+            ]
         });
         res.status(200).send(info);
     } catch(err) {
