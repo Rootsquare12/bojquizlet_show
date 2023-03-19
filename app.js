@@ -4,9 +4,7 @@ const path=require('path');
 const morgan=require('morgan');
 const cookieParser=require('cookie-parser');
 const dotenv=require('dotenv');
-const passport=require('passport');
 const {sequelize}=require('./models');
-const passportConfig=require('./passport');
 const sanitizeHtml=require('sanitize-html');
 
 const main=require('./routes/main');
@@ -14,9 +12,8 @@ const auth=require('./routes/auth');
 const user=require('./routes/user');
 const problems=require('./routes/problems');
 const solutions=require('./routes/solutions');
-const jwt=require('./routes/jwt_check');
+const search=require('./routes/search');
 
-const { authorize } = require('passport');
 const helmet=require('helmet');
 const hpp=require('hpp');
 const logger=require('./logger');
@@ -37,7 +34,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(express.static(path.join(__dirname,'public')));
-app.use('/uploads',express.static(path.join(__dirname,'uploads')));
+app.use('/uploads',express.static(path.join(__dirname,'uploads')));//이 경로를 통해 이미지를 제공한다.
 
 app.set('port', process.env.PORT || 3000);
 
@@ -69,6 +66,7 @@ app.use('/auth',auth);//회원가입,로그인,로그아웃
 app.use('/user',user);//유저 정보
 app.use('/problems',problems);//문제 정보
 app.use('/solutions',solutions);//해설 정보
+app.use('/search',search);//검색 정보
 
 if(process.env.NODE_ENV === 'production') {
     update_problems();
