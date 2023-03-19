@@ -28,7 +28,6 @@ exports.newUser=async (req, res, next) => {//새로운 회원 가입하기
           email:email,
           nickname:nick,
           password:hashed_password,
-          solved:0,
           wrote:0,
           likes:0,
         });

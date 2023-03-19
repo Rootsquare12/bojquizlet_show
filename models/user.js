@@ -21,10 +21,6 @@ class User extends Sequelize.Model
                     allowNull: false,
                     unique: true,
                 },
-                solved: {//푼 문제 수
-                    type: Sequelize.INTEGER.UNSIGNED,
-                    allowNull: false,
-                },
                 wrote: {//풀이를 작성한 문제 수
                     type: Sequelize.INTEGER.UNSIGNED,
                     allowNull: false,
