@@ -11,6 +11,9 @@ exports.callCertainProblem=async (req,res,next) => { // 특정 레벨의 문제 
             where: {
                 problem_difficulty: level,
             },
+            order:[//문제 번호 순
+                ['problem_id','ASC'],
+            ]
         });
         res.send(info);
     } catch(err) {
