@@ -19,15 +19,9 @@ async function add_item(id,dif,name)
     }
     else
     {
-      const total=await Solution.count({
-        where: {
-            problem_id: id,
-        },
-      });
       const info=await Problem.update({
         problem_difficulty:dif,
         problem_name:name,
-        posts:total,
       },{
         where:{problem_id:id},
       })

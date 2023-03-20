@@ -19,16 +19,6 @@ exports.renderSolutions=async (req,res,next) => { // 특정 문제의 해설들�
                 ['likes','DESC'],
             ]
         });
-        const total=await Solution.count({
-            where: {
-                problem_id: id,
-            },
-        });
-        await Solution.update({
-            posts:total,
-        },{
-            where:{problem_id:id},
-        });
         res.status(200).send(info);
     } catch(err) {
         logger.error(err);
@@ -99,6 +89,7 @@ exports.writeSolution=async (req,res,next) => { // 특정 문제에 풀이 작�
                 likes: 0,
                 });
                 User.increment('wrote', { by: 1, where: {id:user_id}});
+                Problem.increment('posts', { by: 1, where: {problem_id:id}});
                 res.send("Solution Written Successfully.");
             }
             else
@@ -179,6 +170,7 @@ exports.uploadPictures=async (req,res,next) => { //그림 파일 저장하기
         logger.info(IMG_URL);
         res.json({ url: IMG_URL });
     } catch(err) {
+        console.log("An Error has occured!");
         logger.error("Error occured while Uploading image.");
     }
 }
@@ -322,6 +314,7 @@ exports.deleteSolution=async (req,res,next) => { //풀이 삭제하기
             const table=db.sequelize.models.like_table;
             User.decrement('likes', { by: cnt, where: {id:user_id}});//이 사람이 받은 좋아요 제거하기
             User.decrement('wrote', { by: 1, where: {id:user_id}});//이 사람이 쓴 해설의 수 하나 빼기
+            Problem.decrement('posts',{ by: 1, where: {problem_id:problem_id}});//이 문제에 달린 해설의 수 하나 빼기
             table.destroy({
                 where: {solution: solution_id},
             });
