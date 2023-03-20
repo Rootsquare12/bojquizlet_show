@@ -69,7 +69,7 @@ app.use('/solutions',solutions);//해설 정보
 app.use('/search',search);//검색 정보
 
 if(process.env.NODE_ENV === 'production') {
-    update_problems();
+    //update_problems();
 }
 //update_problems();
 
