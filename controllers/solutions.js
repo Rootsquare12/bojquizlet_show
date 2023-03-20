@@ -166,11 +166,8 @@ exports.updateSolution=async (req,res,next) => { //특정 풀이 수정하기
 exports.uploadPictures=async (req,res,next) => { //그림 파일 저장하기
     try
     {
-        const IMG_URL = `https://bojquizlet-database.net/uploads/${req.file.filename}`;
-        logger.info(IMG_URL);
-        res.json({ url: IMG_URL });
+        res.json({ url: req.file.location });
     } catch(err) {
-        console.log("An Error has occured!");
         logger.error("Error occured while Uploading image.");
     }
 }

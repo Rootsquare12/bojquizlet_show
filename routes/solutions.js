@@ -1,10 +1,12 @@
 const express=require('express');
+const multer = require('multer');
+const fs=require('fs');
+const path=require('path');
 const {renderSolutions,renderCertainSolution,writeSolution,updateSolution,uploadPictures,solutionLiked,toggleLike,deleteSolution} = require('../controllers/solutions');//해설 관련
 const {verifyToken}=require('../middlewares');
 const router=express.Router();
-const multer=require('multer');
-const fs=require('fs');
-const path=require('path');
+const { S3Client } = require('@aws-sdk/client-s3');
+const multerS3 = require('multer-s3');
 
 try {
     fs.readdirSync('uploads');
@@ -12,18 +14,24 @@ try {
     console.error('Creating Upload File.');
     fs.mkdirSync('uploads');
 }
-  
+
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: process.env.S3_ACCESS_KEY_ID,
+    secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+  },
+  region: 'ap-northeast-2',
+});
+
 const image_upload = multer({
-  storage: multer.diskStorage({
-     destination(req, file, cb) {
-       cb(null, 'uploads/');
-     },
-     filename(req, file, cb) {
-       const ext = path.extname(file.originalname);
-       cb(null, path.basename(file.originalname, ext) + Date.now() + ext);
-     },
-   }),
-   limits: { fileSize: 5 * 1024 * 1024 },
+  storage: multerS3({
+    s3,
+    bucket: 'bojquizlet-pictures',
+    key(req, file, cb) {
+      cb(null, `original/${Date.now()}_${file.originalname}`);
+    },
+  }),
+   limits: { fileSize: 2 * 1024 * 1024 },
 });
 const solution_upload=multer();
 
