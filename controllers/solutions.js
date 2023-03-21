@@ -2,6 +2,7 @@
 const logger=require('../logger');
 const {User,Problem,Solution}=require('../models');
 const db=require('../models');
+const sanitizeHtml=require('sanitize-html');
 
 exports.renderSolutions=async (req,res,next) => { // 특정 문제의 해설들을 가져오기
     try
@@ -80,8 +81,9 @@ exports.writeSolution=async (req,res,next) => { // 특정 문제에 풀이 작�
             });
             if(problem)
             {//유저와 문제 번호가 모두 올바를 경우 풀이를 작성한다.
+                const content=sanitizeHtml(req.body.solution);//풀이에 들어있는 악성 스크립트 제거
                 const data=await Solution.create({
-                content: req.body.solution,
+                content: content,
                 source_code: req.body.code,
                 language: req.body.language,
                 writer: user_id,
@@ -134,8 +136,9 @@ exports.updateSolution=async (req,res,next) => { //특정 풀이 수정하기
                 });
                 if(exSolution)
                 {//그런 풀이가 존재한다면 수정한다.
+                    const content=sanitizeHtml(req.body.solution);//풀이에 들어있는 악성 스크립트 제거
                     await Solution.update({
-                        content:req.body.solution,
+                        content:content,
                         source_code:req.body.code,
                         language: req.body.language,
                     },{

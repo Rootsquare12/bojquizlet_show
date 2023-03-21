@@ -5,7 +5,6 @@ const morgan=require('morgan');
 const cookieParser=require('cookie-parser');
 const dotenv=require('dotenv');
 const {sequelize}=require('./models');
-const sanitizeHtml=require('sanitize-html');
 
 const main=require('./routes/main');
 const auth=require('./routes/auth');
