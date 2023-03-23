@@ -7,6 +7,7 @@ exports.findProfile=async (req,res,next) => {
     {
         const name=req.params.id;
         const info=await User.findOne({
+            attributes:['id','nickname','wrote','likes'],
             where: {
                 nickname:name,
             },
