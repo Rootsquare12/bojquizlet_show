@@ -18,3 +18,12 @@ exports.howManySolutions=async(req,res,next) => { // 현재까지 해설이 달�
         logger.error(err);
     }
 }
+
+exports.checkToken=async(req,res,next) => { // 토큰이 유효한지 확인하기
+    try
+    {//verifyToken을 통해 토큰의 유효성을 확인한다. 만일 별다른 이상이 없다면 반환해준다.
+        res.status(200).send("Token is Valid.");
+    } catch(err) {
+        logger.error(err);
+    }
+}
