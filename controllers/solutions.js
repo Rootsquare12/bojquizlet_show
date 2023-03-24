@@ -81,14 +81,14 @@ exports.writeSolution=async (req,res,next) => { // 특정 문제에 풀이 작�
             });
             if(problem)
             {//유저와 문제 번호가 모두 올바를 경우 풀이를 작성한다.
-                const content=sanitizeHtml(req.body.solution);//풀이에 들어있는 악성 스크립트 제거
-                const data=await Solution.create({
-                content: content,
-                source_code: req.body.code,
-                language: req.body.language,
-                writer: user_id,
-                problem_id: id,
-                likes: 0,
+                const content=req.body.solution;
+                await Solution.create({
+                    content: content,
+                    source_code: req.body.code,
+                    language: req.body.language,
+                    writer: user_id,
+                    problem_id: id,
+                    likes: 0,
                 });
                 User.increment('wrote', { by: 1, where: {id:user_id}});
                 Problem.increment('posts', { by: 1, where: {problem_id:id}});
@@ -136,7 +136,7 @@ exports.updateSolution=async (req,res,next) => { //특정 풀이 수정하기
                 });
                 if(exSolution)
                 {//그런 풀이가 존재한다면 수정한다.
-                    const content=sanitizeHtml(req.body.solution);//풀이에 들어있는 악성 스크립트 제거
+                    const content=req.body.solution;
                     await Solution.update({
                         content:content,
                         source_code:req.body.code,
