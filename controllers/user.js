@@ -20,7 +20,10 @@ exports.findProfile=async (req,res,next) => {
                 attributes:['problem_id'],
                 where: {
                     writer:user_id,
-                }
+                },
+                order:[//번호순
+                    ['problem_id','ASC'],
+                ]
             })
             const total={profile,problems}
             res.status(200).send(total);
