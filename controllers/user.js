@@ -4,17 +4,26 @@ const {User,Solution}=require('../models');
 
 exports.findProfile=async (req,res,next) => {
     try
-    {
+    {//유저 정보 가져오기
         const name=req.params.id;
-        const info=await User.findOne({
+        const profile=await User.findOne({
+            raw:true,
             attributes:['id','nickname','wrote','likes'],
             where: {
                 nickname:name,
             },
         });
-        if(info)
-        {
-            res.status(200).send(info);
+        if(profile)
+        {//유저가 존재한다면 그 유저가 풀이를 쓴 문제들의 번호 가져오기
+            const user_id=profile.id;
+            const problems=await Solution.findAll({
+                attributes:['problem_id'],
+                where: {
+                    writer:user_id,
+                }
+            })
+            const total={profile,problems}
+            res.status(200).send(total);
         }
         else
         {
