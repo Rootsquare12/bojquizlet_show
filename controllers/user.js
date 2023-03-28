@@ -1,6 +1,6 @@
 /*유저 관련 정보*/
 const logger=require('../logger');
-const {User,Solution}=require('../models');
+const {User,Solution,Problem}=require('../models');
 
 exports.findProfile=async (req,res,next) => {
     try
@@ -16,8 +16,12 @@ exports.findProfile=async (req,res,next) => {
         if(profile)
         {//유저가 존재한다면 그 유저가 풀이를 쓴 문제들의 번호 가져오기
             const user_id=profile.id;
-            const problems=await Solution.findAll({
-                attributes:['problem_id'],
+            const wrote=await Solution.findAll({
+                include:[{
+                    model:Problem,
+                    attributes:['problem_id','problem_name'],
+                }],
+                attributes:['likes'],
                 where: {
                     writer:user_id,
                 },
@@ -25,7 +29,7 @@ exports.findProfile=async (req,res,next) => {
                     ['problem_id','ASC'],
                 ]
             })
-            const total={profile,problems}
+            const total={profile,wrote};
             res.status(200).send(total);
         }
         else
