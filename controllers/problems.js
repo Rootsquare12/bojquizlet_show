@@ -7,10 +7,8 @@ exports.callCertainProblem=async (req,res,next) => { // 특정 레벨의 문제 
     try
     {
         const level=req.params.id;
-        const key=req.body.key;//정렬 기준
-        const way=req.body.way;//정렬 방향
-        logger.error(key);
-        logger.error(way);
+        const key=req.query.key;//정렬 기준
+        const way=req.query.way;//정렬 방향
         if((key=='posts' || key=='problem_id' || key=='problem_name') && (way=='ASC' || way=='DESC'))
         {
             const info=await Problem.findAll({
