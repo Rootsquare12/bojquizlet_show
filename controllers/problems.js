@@ -9,6 +9,8 @@ exports.callCertainProblem=async (req,res,next) => { // 특정 레벨의 문제 
         const level=req.params.id;
         const key=req.body.key;//정렬 기준
         const way=req.body.way;//정렬 방향
+        logger.error(key);
+        logger.error(way);
         if((key=='posts' || key=='problem_id' || key=='problem_name') && (way=='ASC' || way=='DESC'))
         {
             const info=await Problem.findAll({
