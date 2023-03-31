@@ -5,6 +5,5 @@ const router=express.Router();
 
 router.get('/level',callAllProblem);//레벨이 id인 문제들을 가져오기
 router.get('/level/:id',callCertainProblem);//레벨이 id인 문제들을 가져오기
-router.get('/name/:id',getProblemName);//id 번호 문제의 제목 가져오기
 
 module.exports=router;

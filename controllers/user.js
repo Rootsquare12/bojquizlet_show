@@ -40,3 +40,27 @@ exports.findProfile=async (req,res,next) => {
         console.error(err);
     }
 }
+
+exports.userRank=async (req,res,next) => { // 유저 순위
+    try
+    {
+        const key=req.query.key;//정렬 기준
+        const way=req.query.way;//정렬 방향
+        if((key=='wrote' || key=='likes') && (way=='ASC' || way=='DESC'))
+        {
+            const info=await User.findAll({
+                attributes:['nickname','wrote','likes'],
+                order:[//정렬하기
+                    [key,way],
+                ]
+            });
+            res.send(info);
+        }
+        else
+        {
+            res.status(404).send("Invalid Body Input.");
+        }
+    } catch(err) {
+        logger.error(err);
+    }
+}
