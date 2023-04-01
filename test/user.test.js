@@ -1,8 +1,8 @@
 //jest.mock('../models');
-const User=require('../models/user');
+//const User=require('../models/user');
 const {findProfile}=require('../controllers/user');
 
-describe('follow',() => {
+describe('find_profile',() => {
     const res={
         status:jest.fn(()=>res),
         send:jest.fn(),

@@ -59,3 +59,27 @@ exports.callAllProblem=async (req,res,next) => { // 모든 문제 가져오기
         logger.error(err);
     }
 }
+
+exports.getProblemName=async (req,res,next) => {//특정 번호 문제의 이름만 가져오기
+    try
+    {
+        const id=req.params.id;
+        const info=await Problem.findOne({
+            attributes:['problem_name'],
+            where: {
+                problem_id: id,
+            },
+        });
+        if(info)
+        {
+            res.send(info);
+        }
+        else
+        {
+            res.status(404).send("No such problem.");
+        }
+        res.send(data);
+    } catch(err) {
+        logger.error(err);
+    }
+}
