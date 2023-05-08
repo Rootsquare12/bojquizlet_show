@@ -1,7 +1,7 @@
 /*문제와 관련한 정보*/
 const logger=require('../logger');
-const {Op}=require('sequelize');
-const {Problem}=require('../models');
+const {QueryTypes}=require('sequelize');
+const {Problem, sequelize}=require('../models');
 
 exports.callCertainProblem=async (req,res,next) => { // 특정 레벨의 문제 가져오기
     try
@@ -32,29 +32,10 @@ exports.callCertainProblem=async (req,res,next) => { // 특정 레벨의 문제 
 }
 exports.callAllProblem=async (req,res,next) => { // 모든 문제 가져오기
     try
-    {
-        let data=[];
-        for(let i=0; i<=30; i++)
-        {//난이도별 문제 수 및 해설이 달린 문제 수
-            const total=await Problem.count({
-                where: {
-                    problem_difficulty: i,
-                },
-            });
-            const has_solution=await Problem.count({
-                where: {
-                    problem_difficulty: i,
-                    posts: {[Op.gt]:0},
-                },
-            });
-            const info= {
-                "problem_difficulty": i,
-                "total": total,
-                "has_solution": has_solution
-            };
-            data.push(info);
-        }
-        res.send(data);
+    {//여기부터
+        const query='select problem_difficulty,count(distinct p.problem_id) as total,count(distinct s.problem_id) as has_solution from problems as p left outer join solutions as s on p.problem_id=s.problem_id group by problem_difficulty order by problem_difficulty';
+        const result=await sequelize.query(query,{type:QueryTypes.SELECT});
+        res.send(result);
     } catch(err) {
         logger.error(err);
     }
