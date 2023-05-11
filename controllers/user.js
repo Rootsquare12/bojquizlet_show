@@ -1,6 +1,7 @@
 /*유저 관련 정보*/
 const logger=require('../logger');
-const {User,Solution,Problem}=require('../models');
+const {QueryTypes}=require('sequelize');
+const {User,Solution,Problem, sequelize}=require('../models');
 
 exports.findProfile=async (req,res,next) => {
     try
@@ -48,13 +49,11 @@ exports.userRank=async (req,res,next) => { // 유저 순위
         const way=req.query.way;//정렬 방향
         if((key=='wrote' || key=='likes') && (way=='ASC' || way=='DESC'))
         {
-            const info=await User.findAll({
-                attributes:['nickname','wrote','likes'],
-                order:[//정렬하기
-                    [key,way],
-                ]
-            });
-            res.send(info);
+            let query='select nickname,count(distinct s.id) as wrote,count(l.user) as likes from (users as u left outer join solutions as s on u.id=writer) left outer join like_table as l on s.id=l.solution group by nickname order by key way';
+            query=query.replace('key',key);
+            query=query.replace('way',way);
+            const result=await sequelize.query(query,{type:QueryTypes.SELECT});
+            res.send(result);
         }
         else
         {
