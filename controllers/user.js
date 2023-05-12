@@ -1,7 +1,7 @@
 /*유저 관련 정보*/
 const logger=require('../logger');
 const {QueryTypes}=require('sequelize');
-const {User,Solution,Problem, sequelize}=require('../models');
+const {User,Solution,Problem,sequelize}=require('../models');
 
 exports.findProfile=async (req,res,next) => {
     try

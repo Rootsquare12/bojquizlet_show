@@ -1,26 +1,17 @@
 /*해설 관련 정보*/
 const logger=require('../logger');
-const {User,Problem,Solution}=require('../models');
+const {QueryTypes}=require('sequelize');
+const {User,Problem,Solution,sequelize}=require('../models');
 const db=require('../models');
 const sanitizeHtml=require('sanitize-html');
 
 exports.renderSolutions=async (req,res,next) => { // 특정 문제의 해설들을 가져오기
     try
     {
-        const id=req.params.id;
-        const info=await Solution.findAll({
-            include:[{
-                model:User,
-                attributes:['nickname'],
-            }],
-            where: {
-                problem_id: id,
-            },
-            order:[//좋아요 많은 순으로
-                ['likes','DESC'],
-            ]
-        });
-        res.status(200).send(info);
+        const id=req.params.id; //수정하기
+        const query='select nickname,count(user) as likes from (users inner join solutions on users.id=writer) left outer join like_table as l on solutions.id=l.solution where problem_id=? group by nickname order by likes DESC';
+        const result=await sequelize.query(query,{type:QueryTypes.SELECT,replacements:[id]});
+        res.status(200).send(result);
     } catch(err) {
         logger.error(err);
     }
