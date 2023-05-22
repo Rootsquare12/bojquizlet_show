@@ -39,6 +39,7 @@ exports.findProfile=async (req,res,next) => {
         }
     } catch(err) {
         console.error(err);
+        next(err);
     }
 }
 
@@ -61,5 +62,6 @@ exports.userRank=async (req,res,next) => { // 유저 순위
         }
     } catch(err) {
         logger.error(err);
+        next(err);
     }
 }
