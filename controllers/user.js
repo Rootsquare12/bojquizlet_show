@@ -7,29 +7,14 @@ exports.findProfile=async (req,res,next) => {
     try
     {//유저 정보 가져오기
         const name=req.params.id;
-        const profile=await User.findOne({
-            raw:true,
-            attributes:['id','nickname','wrote','likes'],
-            where: {
-                nickname:name,
-            },
-        });
-        if(profile)
+        const query_1='select u.id,nickname,count(distinct s.id) as wrote,count(l.user) as likes from (users as u left outer join solutions as s on u.id=writer) left outer join like_table as l on s.id=l.solution where nickname=?';
+        const info=await sequelize.query(query_1,{raw:true,type:QueryTypes.SELECT,replacements:[name]});
+        if(info)
         {//유저가 존재한다면 그 유저가 풀이를 쓴 문제들의 번호 가져오기
+            const profile=info[0];
             const user_id=profile.id;
-            const wrote=await Solution.findAll({
-                include:[{
-                    model:Problem,
-                    attributes:['problem_id','problem_name'],
-                }],
-                attributes:['likes'],
-                where: {
-                    writer:user_id,
-                },
-                order:[//번호순
-                    ['problem_id','ASC'],
-                ]
-            })
+            const query_2='select p.problem_id,problem_name,count(user) as likes from (problems as p inner join solutions as s on p.problem_id=s.problem_id) left outer join like_table as l on s.id=l.solution  where writer=? group by p.problem_id,problem_name order by p.problem_id ASC';
+            const wrote=await sequelize.query(query_2,{type:QueryTypes.SELECT,replacements:[user_id]});
             const total={profile,wrote};
             res.status(200).send(total);
         }
