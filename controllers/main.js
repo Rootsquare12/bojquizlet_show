@@ -7,7 +7,7 @@ exports.howManySolutions=async(req,res,next) => { // 현재까지 해설이 달�
     {
         const query='select count(distinct problem_id) as solutions from solutions';
         const info=await sequelize.query(query,{type:QueryTypes.SELECT});
-        res.send(info);
+        res.send(info[0]);
     } catch(err) {
         logger.error(err);
         next(err);
