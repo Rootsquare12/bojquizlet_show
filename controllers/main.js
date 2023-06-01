@@ -5,17 +5,12 @@ const {Problem}=require('../models');
 exports.howManySolutions=async(req,res,next) => { // 현재까지 해설이 달린 문제 수
     try
     {
-        const total=await Problem.count({
-            where: {
-                posts: {[Op.gt]:0},
-            },
-        });
-        const info= {
-            "solutions": total,
-        };
+        const query='select count(distinct problem_id) as solutions from solutions';
+        const info=await sequelize.query(query,{type:QueryTypes.SELECT});
         res.send(info);
     } catch(err) {
         logger.error(err);
+        next(err);
     }
 }
 
@@ -25,5 +20,6 @@ exports.checkToken=async(req,res,next) => { // 토큰이 유효한지 확인하�
         res.status(200).send("Token is Valid.");
     } catch(err) {
         logger.error(err);
+        next(err);
     }
 }
