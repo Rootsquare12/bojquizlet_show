@@ -21,10 +21,6 @@ class Solution extends Sequelize.Model
                 language: {//소스 코드의 언어 종류
                     type:Sequelize.ENUM('c_cpp','python','java','javascript','other'),
                 },
-                likes: {//받은 좋아요 수
-                    type: Sequelize.INTEGER.UNSIGNED,
-                    allowNull:false,
-                }
             },
             {
                 sequelize,

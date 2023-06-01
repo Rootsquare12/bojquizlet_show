@@ -23,6 +23,7 @@ exports.callCertainProblem=async (req,res,next) => { // 특정 레벨의 문제 
         }
     } catch(err) {
         logger.error(err);
+        next(err);
     }
 }
 exports.callAllProblem=async (req,res,next) => { // 모든 문제 가져오기
@@ -33,6 +34,7 @@ exports.callAllProblem=async (req,res,next) => { // 모든 문제 가져오기
         res.send(result);
     } catch(err) {
         logger.error(err);
+        next(err);
     }
 }
 
@@ -57,5 +59,6 @@ exports.getProblemName=async (req,res,next) => {//특정 번호 문제의 이름
         res.send(data);
     } catch(err) {
         logger.error(err);
+        next(err);
     }
 }

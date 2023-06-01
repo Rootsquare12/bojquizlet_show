@@ -20,10 +20,6 @@ class Problem extends Sequelize.Model
                     type:Sequelize.STRING(200),
                     allowNull: false,
                 },
-                posts: {//작성된 풀이의 수
-                    type:Sequelize.INTEGER.UNSIGNED,
-                    allowNull: false,
-                },
             },
             {
                 sequelize,

@@ -14,6 +14,7 @@ exports.renderSolutions=async (req,res,next) => { // 특정 문제의 해설들�
         res.status(200).send(result);
     } catch(err) {
         logger.error(err);
+        next(err);
     }
 }
 
@@ -50,6 +51,7 @@ exports.renderCertainSolution=async (req,res,next) => { // 특정 문제의 특�
         }
     } catch(err) {
         logger.error(err);
+        next(err);
     }
 }
 
@@ -79,10 +81,7 @@ exports.writeSolution=async (req,res,next) => { // 특정 문제에 풀이 작�
                     language: req.body.language,
                     writer: user_id,
                     problem_id: id,
-                    likes: 0,
                 });
-                User.increment('wrote', { by: 1, where: {id:user_id}});
-                Problem.increment('posts', { by: 1, where: {problem_id:id}});
                 res.send("Solution Written Successfully.");
             }
             else
@@ -163,6 +162,7 @@ exports.uploadPictures=async (req,res,next) => { //그림 파일 저장하기
         res.json({ url: req.file.location });
     } catch(err) {
         logger.error("Error occured while Uploading image.");
+        next(err);
     }
 }
 
@@ -216,6 +216,7 @@ exports.solutionLiked=async (req,res,next) => { //유저가 현재 보고 있는
         }
     } catch(err) {
         logger.error(err);
+        next(err);
     }
 }
 
@@ -257,8 +258,6 @@ exports.toggleLike=async (req,res,next) => { //좋아요 표시하기
                             solution:solution_id,
                         }
                     })
-                    User.increment('likes', { by: -1, where: { nickname:writer}});
-                    Solution.increment('likes', { by: -1, where: { problem_id:problem_id,writer:writer_id}});
                     res.send("Like removed.");
                 }
                 else
@@ -267,8 +266,6 @@ exports.toggleLike=async (req,res,next) => { //좋아요 표시하기
                         user:user_id,
                         solution:solution_id,
                     })
-                    User.increment('likes', { by: 1, where: { nickname:writer}});//풀이를 쓴 사람은 좋아요를 받는다.
-                    Solution.increment('likes', { by: 1, where: { problem_id:problem_id,writer:writer_id}});//그 풀이가 받은 좋아요 개수도 하나 늘린다.
                     res.send("Like added.");
                 }
             }
@@ -283,6 +280,7 @@ exports.toggleLike=async (req,res,next) => { //좋아요 표시하기
         }
     } catch(err) {
         logger.error(err);
+        next(err);
     }
 }
 
@@ -300,12 +298,8 @@ exports.deleteSolution=async (req,res,next) => { //풀이 삭제하기
         });
         if(solution)
         {//해당 풀이가 존재하는 경우
-            const cnt=solution.likes;//현재까지 이 풀이가 받은 좋아요 개수
             const solution_id=solution.id;//해설 일련번호
             const table=db.sequelize.models.like_table;
-            User.decrement('likes', { by: cnt, where: {id:user_id}});//이 사람이 받은 좋아요 제거하기
-            User.decrement('wrote', { by: 1, where: {id:user_id}});//이 사람이 쓴 해설의 수 하나 빼기
-            Problem.decrement('posts',{ by: 1, where: {problem_id:problem_id}});//이 문제에 달린 해설의 수 하나 빼기
             table.destroy({
                 where: {solution: solution_id},
             });
@@ -323,5 +317,6 @@ exports.deleteSolution=async (req,res,next) => { //풀이 삭제하기
         }
     } catch(err) {
         logger.error(err);
+        next(err);
     }
 }

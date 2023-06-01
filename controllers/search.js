@@ -18,5 +18,6 @@ exports.searchProblem=async (req,res,next) => { // 특정 레벨의 문제 가�
         res.send(info);
     } catch(err) {
         logger.error(err);
+        next(err);
     }
 }
