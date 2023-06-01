@@ -9,7 +9,7 @@ exports.renderSolutions=async (req,res,next) => { // 특정 문제의 해설들�
     try
     {
         const id=req.params.id; //수정하기
-        const query='select nickname,count(user) as likes from (users inner join solutions on users.id=writer) left outer join like_table as l on solutions.id=l.solution where problem_id=? group by nickname order by likes DESC';
+        const query='select nickname,count(user) as likes from (users inner join solutions on users.id=writer) left outer join like_table as l on solutions.id=l.solution where problem_id=? and deletedAt is null group by nickname order by likes DESC';
         const result=await sequelize.query(query,{type:QueryTypes.SELECT,replacements:[id]});
         res.status(200).send(result);
     } catch(err) {

@@ -11,7 +11,7 @@ exports.callCertainProblem=async (req,res,next) => { // 특정 레벨의 문제 
         const way=req.query.way;//정렬 방향
         if((key=='posts' || key=='problem_id' || key=='problem_name') && (way=='ASC' || way=='DESC'))
         {
-            let query='select p.problem_id,p.problem_name,count(writer) as posts from problems as p left outer join solutions as s on p.problem_id=s.problem_id where problem_difficulty=? group by problem_id,problem_name order by key way';
+            let query='select p.problem_id,p.problem_name,count(writer) as posts from problems as p left outer join (select problem_id,writer from solutions where deletedAt is null) as s on p.problem_id=s.problem_id where problem_difficulty=? group by problem_id,problem_name order by key way';
             query=query.replace('key',key);
             query=query.replace('way',way);
             const result=await sequelize.query(query,{type:QueryTypes.SELECT,replacements:[level]});
