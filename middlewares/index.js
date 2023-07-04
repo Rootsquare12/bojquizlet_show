@@ -15,8 +15,9 @@ exports.verifyToken = (req, res, next) => {
 
 exports.verifyOrigin = (req, res, next) => {
   const desiredOrigin = process.env.TARGET_ORIGIN;
+  const semiOrigin = process.env.TESTING_ORIGIN;
   const requestOrigin = req.get('Origin');
-  if (desiredOrigin === requestOrigin) {
+  if ((desiredOrigin === requestOrigin) || (semiOrigin === requestOrigin)) {
     next();
   } else {
     res.status(403).send("Forbidden User.");
