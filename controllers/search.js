@@ -7,11 +7,10 @@ exports.searchProblem=async (req,res,next) => { // 특정 레벨의 문제 가�
     try
     {
         const input=req.query.query;//이 번호의 문제 또는 이 문자열이 들어간 문제
-        const order=input.toLowerCase();//소문자화
-        let query="with target as (select problem_id,problem_name from problems where (problem_id='INPUT' or lower(problem_name) like '%INPUT%')) select target.problem_id,target.problem_name,count(id) as solutions from target left outer join solutions on target.problem_id=solutions.problem_id group by problem_id,problem_name order by problem_id ASC";
-        query=query.replace('INPUT',order);
-        query=query.replace('INPUT',order);
-        const result=await sequelize.query(query,{type:QueryTypes.SELECT});
+        const order1=input.toLowerCase();//소문자화
+        const order2='%'+order1+'%';
+        let query="with target as (select problem_id,problem_name from problems where (problem_id=? or lower(problem_name) like ?)) select target.problem_id,target.problem_name,count(id) as solutions from target left outer join solutions on target.problem_id=solutions.problem_id group by problem_id,problem_name order by problem_id ASC";
+        const result=await sequelize.query(query,{type:QueryTypes.SELECT,replacements:[order1,order2]});
         res.send(result);
     } catch(err) {
         logger.error(err);
