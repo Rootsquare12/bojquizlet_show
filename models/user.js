@@ -10,17 +10,28 @@ class User extends Sequelize.Model
                 email: {
                     type:Sequelize.STRING(40),
                     allowNull: false,
-                    unique: true,
+                    unique: true
                 },
                 password: {
                     type: Sequelize.STRING(100),
-                    allowNull: false,
+                    allowNull: false
                 },
                 nickname: {
                     type: Sequelize.STRING(20),
                     allowNull: false,
-                    unique: true,
+                    unique: true
                 },
+                verify: {
+                    type: Sequelize.BOOLEAN,
+                    allowNull: false,
+                    defaultValue: false
+                },
+                verify_code: {
+                    type: Sequelize.STRING(10)
+                },
+                verify_time: {
+                    type: Sequelize.DATE
+                }
             },
             {
                 sequelize,
