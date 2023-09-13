@@ -58,7 +58,7 @@ exports.loginProcess=async (req, res, next) => {//새로운 회원 가입하기
           user_id: user_id,
           nickname: nick,
         },key,{
-          expiresIn:"1h",//토큰 유효기간
+          expiresIn:"2h",//토큰 유효기간
           issuer:"rootsquare",//토큰 발행자
         })
         const info={
