@@ -36,7 +36,7 @@ async function add_item(id,dif,name)
 
 function update_problems()
 {
-  for(let d=1000; d<=30000; d+=100)
+  for(let d=1000; d<=34000; d+=100)
   {
     let string="";
     let start=d;
